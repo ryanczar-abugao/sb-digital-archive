@@ -1,0 +1,14 @@
+{% extends 'base.twig' %}
+
+{% block title %}Ordinances{% endblock %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold">Ordinances</h1>
+    <ul>
+        {% for ordinance in ordinances %}
+            <li>
+                {{ ordinance.title }} 
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

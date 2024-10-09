@@ -1,0 +1,32 @@
+{% extends 'base.twig' %}
+
+{% block title %}Upload Ordinances{% endblock %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold">Upload Ordinances</h1>
+    
+    <form action="/admin/ordinances" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="ordinanceId" value="{{ ordinance.ordinanceId ?? '' }}">
+        
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required class="border p-2" value="{{ ordinance.title ?? '' }}">
+        
+        <label for="authors">Authors:</label>
+        <input type="text" id="authors" name="authors" required class="border p-2" value="{{ ordinance.authors ?? '' }}">
+        
+        <label for="filename">Upload File:</label>
+        <input type="file" id="filename" name="filename" required class="border p-2">
+        
+        <button type="submit" class="bg-blue-500 text-white p-2 rounded">Upload Ordinance</button>
+    </form>
+    
+    <h2 class="text-2xl mt-4">Existing Ordinances</h2>
+    <ul>
+        {% for ordinance in ordinances %}
+            <li>
+                {{ ordinance.title }} 
+                <a href="/admin/ordinances/{{ ordinance.ordinanceId }}/delete">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

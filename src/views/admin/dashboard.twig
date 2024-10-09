@@ -1,0 +1,25 @@
+{% extends 'base.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold">Welcome to the Admin Dashboard</h1>
+    <p>This is the admin area where you can manage ordinances, history, and members.</p>
+
+    <h2 class="text-2xl mt-4">Manage Sangguniang Bayan Members</h2>
+    <ul class="list-disc pl-5">
+        <li><a href="/admin/members" class="text-blue-500">View Members</a></li>
+    </ul>
+
+    <h2 class="text-2xl mt-4">Manage History</h2>
+    <ul class="list-disc pl-5">
+        <li><a href="/admin/history" class="text-blue-500">View History</a></li>
+    </ul>
+
+    <h2 class="text-2xl mt-4">Manage Ordinances</h2>
+    <ul class="list-disc pl-5">
+        <li><a href="/admin/ordinances" class="text-blue-500">View Ordinances</a></li>
+    </ul>
+
+    <a href="/admin/logout" class="text-red-500 mt-4">Logout</a>
+{% endblock %}

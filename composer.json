@@ -1,0 +1,17 @@
+{
+    "name": "abry/sb-digital-archive",
+    "autoload": {
+        "psr-4": {
+            "Abry\\SbDigitalArchive\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ryan.abugao",
+            "email": "ryan.abugao@gmail.com"
+        }
+    ],
+    "require": {
+        "twig/twig": "^3.0"
+    }
+}

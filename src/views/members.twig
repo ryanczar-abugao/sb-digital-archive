@@ -1,0 +1,17 @@
+{% extends 'base.twig' %}
+
+{% block title %}Manage Members{% endblock %}
+
+{% block content %}
+    
+    <h2 class="text-2xl mt-4">Existing Members</h2>
+    <ul>
+        {% for member in members %}
+            <li>
+                {{ member.firstName }} {{ member.lastName }} 
+                <a href="/admin/members/{{ member.memberId }}/edit">Edit</a> | 
+                <a href="/admin/members/{{ member.memberId }}/delete">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

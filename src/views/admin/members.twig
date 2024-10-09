@@ -1,0 +1,48 @@
+{% extends 'base.twig' %}
+
+{% block title %}Manage Members{% endblock %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold">Sangguniang Bayan Members</h1>
+    
+    <form action="/admin/members" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="memberId" value="{{ member.memberId ?? '' }}">
+        
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required class="border p-2" value="{{ member.firstName ?? '' }}">
+        
+        <label for="middleName">Middle Name:</label>
+        <input type="text" id="middleName" name="middleName" class="border p-2" value="{{ member.middleName ?? '' }}">
+        
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required class="border p-2" value="{{ member.lastName ?? '' }}">
+        
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" class="border p-2">
+            <option value="male" {% if member.gender == 'male' %}selected{% endif %}>Male</option>
+            <option value="female" {% if member.gender == 'female' %}selected{% endif %}>Female</option>
+        </select>
+        
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required class="border p-2" value="{{ member.address ?? '' }}">
+        
+        <label for="position">Position:</label>
+        <input type="text" id="position" name="position" required class="border p-2" value="{{ member.position ?? '' }}">
+        
+        <label for="profilePicture">Profile Picture:</label>
+        <input type="file" id="profilePicture" name="profilePicture" class="border p-2">
+        
+        <button type="submit" class="bg-blue-500 text-white p-2 rounded">Save Member</button>
+    </form>
+    
+    <h2 class="text-2xl mt-4">Existing Members</h2>
+    <ul>
+        {% for member in members %}
+            <li>
+                {{ member.firstName }} {{ member.lastName }} 
+                <a href="/admin/members/{{ member.memberId }}/edit">Edit</a> | 
+                <a href="/admin/members/{{ member.memberId }}/delete">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

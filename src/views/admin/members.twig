@@ -1,0 +1,76 @@
+{% extends 'base.twig' %}
+
+{% block title %}Manage Members
+{% endblock %}
+
+{% block content %}
+	<h1 class="text-3xl font-bold mb-3">Sangguniang Bayan Members</h1>
+
+	<form action="{{ formAction }}" method="POST" enctype="multipart/form-data">
+		<input type="hidden" name="memberId" value="{{ selectedMember.memberId ?? '' }}">
+
+		<div class="mb-3 grid grid-cols-2 gap-3">
+			<label for="firstName">First Name:</label>
+			<input type="text" id="firstName" name="firstName" required class="rounded border-0 p-2" value="{{ selectedMember.firstName ?? '' }}">
+
+			<label for="middleName">Middle Name:</label>
+			<input type="text" id="middleName" name="middleName" class="rounded border-0 p-2" value="{{ selectedMember.middleName ?? '' }}">
+
+			<label for="lastName">Last Name:</label>
+			<input type="text" id="lastName" name="lastName" required class="rounded border-0 p-2" value="{{ selectedMember.lastName ?? '' }}">
+			
+			<label for="description">Description: </label>
+			<textarea name="description" id="description" class="rounded border-0 p-2">{{ selectedMember.description ?? '' }}</textarea>
+
+			<label for="gender">Gender:</label>
+			<select id="gender" name="gender" class="rounded border-0 p-2">
+				<option value="male" {% if selectedMember.gender == 'male' %} selected {% endif %}>Male</option>
+				<option value="female" {% if selectedMember.gender == 'female' %} selected {% endif %}>Female</option>
+			</select>
+			
+			<label for="address">Address:</label>
+			<input type="text" id="address" name="address" required class="rounded border-0 p-2" value="{{ selectedMember.address ?? '' }}">
+			
+			<label for="position">Position:</label>
+			<input type="text" id="position" name="position" required class="rounded border-0 p-2" value="{{ selectedMember.position ?? '' }}">
+			
+			<label for="profilePicture">Profile Picture:</label>
+			<input type="file" id="profilePicture" name="profilePicture" class="rounded border-0 p-2">
+		</div>
+
+		<button type="submit" class="bg-blue-500 text-white p-2 rounded">Save Member</button>
+	</form>
+
+	<h2 class="text-2xl mt-4">Existing Members</h2>
+
+	<div class="shadow-sm p-2">
+		<table class="table-auto min-w-full">
+			<thead class="text-left">
+				<tr>
+					<th class="border p-2">Actions</th>
+					<th class="border p-2">Name</th>
+					<th class="border p-2">Gender</th>
+					<th class="border p-2">Address</th>
+					<th class="border p-2">Position</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for member in members %}
+					<tr>
+						<td class="border p-2 w-[70px]">
+							<a href="/admin/members/edit/{{ member.memberId }}" class="bg-blue-500 rounded p-2">E</a>
+							<a href="/admin/members/delete/{{ member.memberId }}" class="bg-red-500 rounded p-2">D</a>
+						</td>
+						<td class="border p-2">
+							{{ member.firstName }}
+							{{ member.lastName }}
+						</td>
+						<td class="border p-2">{{ member.gender }}</td>
+						<td class="border p-2">{{ member.address }}</td>
+						<td class="border p-2">{{ member.position }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}

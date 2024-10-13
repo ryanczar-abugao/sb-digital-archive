@@ -1,0 +1,56 @@
+{% extends 'base.twig' %}
+
+{% block title %}
+	About Us
+{% endblock %}
+
+{% block content %}
+	<h1 class="text-3xl font-bold mb-3">About Us</h1>
+
+	<div class="mb-3">
+		<h2 class="text-2xl font-bold">History</h2>
+		{% for chapter in chapters %}
+			<div class="shadow-md bg-gray-100 rounded p-2 mb-3">
+				<h3 class="font-bold">{{ chapter.chapter }}</h3>
+				<h4 class="mb-3">{{ chapter.title }}</h4>
+
+				{% for content in chapter.contents %}
+					<div class="mb-2">
+						<p>{{ content.content }}</p>
+
+						{% if content.leftImage %}
+							<img src="{{ content.leftImage }}" alt="Left Image"/>
+						{% endif %}
+						{% if content.rightImage %}
+							<img src="{{ content.rightImage }}" alt="Right Image"/>
+						{% endif %}
+					</div>
+				{% endfor %}
+			</div>
+		{% endfor %}
+	</div>
+
+	<div>
+		<h2 class="text-2xl font-bold mb-3">Sangguniang Bayan Members</h2>
+		{% for member in members %}
+			<div class="shadow-md bg-gray-100 rounded p-2 mb-3">
+				<img src="{{ member.profilePicture }}" alt="" class="w-[60px] h-[60px] rounded">
+				<h3>
+					<strong>
+						Name:
+					</strong>
+					{{ member.firstName }}
+					{{ member.lastName }}
+				</h3>
+				<h3>
+					<strong>
+						Position
+					</strong>
+					{{ member.position }}
+				</h3>
+				<p>{{ member.description }}</p>
+				<a href="/members/{{ member.memberId }}" class="text-sky-600">View Profile</a>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}

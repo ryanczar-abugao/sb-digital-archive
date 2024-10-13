@@ -1,0 +1,25 @@
+{% extends 'base.twig' %}
+
+{% block title %}Ordinances
+{% endblock %}
+
+{% block content %}
+	<h1 class="text-3xl font-bold mb-3">Ordinances</h1>
+
+	{% for ordinance in ordinances %}
+		<div class="shadow-md bg-gray-100 rounded p-2 mb-3">
+			<h2>
+				<strong>
+					Title:
+				</strong>
+				{{ ordinance.title }}</h2>
+			<h3>
+				<strong>
+					Authors:
+				</strong>
+				{{ ordinance.authors }}</h3>
+				<p>{{ ordinance.description }}</p>
+			<a href="/ordinances/download/{{ ordinance.ordinanceId }}" class="text-sky-600">Download</a>
+		</div>
+	{% endfor %}
+{% endblock %}

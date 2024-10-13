@@ -1,0 +1,25 @@
+{% extends 'base.twig' %}
+
+{% block title %}Admin Login
+{% endblock %}
+
+{% block content %}
+	<h1 class="text-3xl font-bold mb-3">Admin Login</h1>
+
+	{% if error %}
+		<p class="text-red-500">{{ error }}</p>
+	{% endif %}
+
+	<form action="/admin/login" method="POST">
+
+		<div class="grid grid-cols-1 gap-3 mb-3">
+			<label for="username">Username:</label>
+			<input type="text" id="username" name="username" class="border-0 rounded p-2" required>
+			
+			<label for="password">Password:</label>
+			<input type="password" id="password" name="password" class="border-0 rounded p-2" required>
+		</div>
+
+		<button type="submit" class="bg-blue-500 text-white p-2 rounded">Login</button>
+	</form>
+{% endblock %}

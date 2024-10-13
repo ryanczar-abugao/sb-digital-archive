@@ -3,21 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <title>{% block title %}My Web App{% endblock %}</title>
+    <link rel="icon" href="/assets/uploads/SBLogo.ico"/>
+    <title>{% block title %}Sangunian Bayan Digital Archive{% endblock %}</title>
 </head>
-<body class="bg-gray-100">
-    <header class="bg-blue-600 text-white p-4">
-        <h1 class="text-2xl">My Web App</h1>
+<body class="bg-gray-100 text-sm md:text-base">
+    <header class="bg-gray-800 text-white p-4 sticky top-0">
+        <div class="flex items-center mb-3">
+            <img src="/assets/uploads/SBLogo.png" alt="SB Logo" class="w-[25px] h-[25px] mr-2">
+            <h1 class="text-2xl">Sangunian Bayan Digital Archive</h1>
+        </div>
         <nav>
             <a href="/" class="mr-4">Home</a>
             <a href="/ordinances" class="mr-4">Ordinances</a>
             <a href="/about" class="mr-4">About Us</a>
-            <a href="/admin/login" class="mr-4">Admin Login</a>
+            <a href="/admin/login" class="mr-4">Login</a>
         </nav>
     </header>
-    <main class="p-4">
+
+    <main class="p-4 min-h-[calc(100vh-164px)]">
         {% block content %}{% endblock %}
     </main>
+
+    <footer class="bg-gray-700 text-white py-6">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 Sangunian Bayan. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/tailwindcss-cdn@3.4.10/tailwindcss.js"></script>
+    <script src="https://unpkg.com/tailwindcss-cdn@3.4.10/tailwindcss-with-all-plugins.js"></script>
 </body>
 </html>

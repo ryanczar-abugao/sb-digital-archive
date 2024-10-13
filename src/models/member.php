@@ -22,12 +22,13 @@ class Member {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function createMember($firstName, $middleName, $lastName, $gender, $address, $position, $profilePicture, $createdBy) {
-        $stmt = $this->pdo->prepare("INSERT INTO sbmembers (firstName, middleName, lastName, gender, address, position, profilePicture, createdBy) VALUES (:firstName, :middleName, :lastName, :gender, :address, :position, :profilePicture, :createdBy)");
+    public function createMember($firstName, $middleName, $lastName, $description, $gender, $address, $position, $profilePicture, $createdBy) {
+        $stmt = $this->pdo->prepare("INSERT INTO sbmembers (firstName, middleName, lastName, description, gender, address, position, profilePicture, createdBy) VALUES (:firstName, :middleName, :lastName, :gender, :address, :position, :profilePicture, :createdBy)");
         return $stmt->execute([
             'firstName' => $firstName,
             'middleName' => $middleName,
             'lastName' => $lastName,
+            'description' => $description,
             'gender' => $gender,
             'address' => $address,
             'position' => $position,
@@ -36,17 +37,19 @@ class Member {
         ]);
     }
 
-    public function updateMember($id, $firstName, $middleName, $lastName, $gender, $address, $position, $profilePicture) {
-        $stmt = $this->pdo->prepare("UPDATE sbmembers SET firstName = :firstName, middleName = :middleName, lastName = :lastName, gender = :gender, address = :address, position = :position, profilePicture = :profilePicture WHERE memberId = :id");
+    public function updateMember($id, $firstName, $middleName, $lastName, $description, $gender, $address, $position, $profilePicture, $updatedBy) {
+        $stmt = $this->pdo->prepare("UPDATE sbmembers SET firstName = :firstName, middleName = :middleName, lastName = :lastName, description = :description, gender = :gender, address = :address, position = :position, profilePicture = :profilePicture, updatedBy = :updatedBy, updatedAt = NOW() WHERE memberId = :id");
         return $stmt->execute([
             'id' => $id,
             'firstName' => $firstName,
             'middleName' => $middleName,
             'lastName' => $lastName,
+            'description' => $description,
             'gender' => $gender,
             'address' => $address,
             'position' => $position,
-            'profilePicture' => $profilePicture
+            'profilePicture' => $profilePicture,
+            'updatedBy' => $updatedBy
         ]);
     }
 

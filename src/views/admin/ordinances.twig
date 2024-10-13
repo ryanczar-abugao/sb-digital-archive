@@ -1,32 +1,56 @@
 {% extends 'base.twig' %}
 
-{% block title %}Upload Ordinances{% endblock %}
+{% block title %}Upload Ordinances
+{% endblock %}
 
 {% block content %}
-    <h1 class="text-3xl font-bold">Upload Ordinances</h1>
-    
-    <form action="/admin/ordinances" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="ordinanceId" value="{{ ordinance.ordinanceId ?? '' }}">
-        
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required class="border p-2" value="{{ ordinance.title ?? '' }}">
-        
-        <label for="authors">Authors:</label>
-        <input type="text" id="authors" name="authors" required class="border p-2" value="{{ ordinance.authors ?? '' }}">
-        
-        <label for="filename">Upload File:</label>
-        <input type="file" id="filename" name="filename" required class="border p-2">
-        
-        <button type="submit" class="bg-blue-500 text-white p-2 rounded">Upload Ordinance</button>
-    </form>
-    
-    <h2 class="text-2xl mt-4">Existing Ordinances</h2>
-    <ul>
-        {% for ordinance in ordinances %}
-            <li>
-                {{ ordinance.title }} 
-                <a href="/admin/ordinances/{{ ordinance.ordinanceId }}/delete">Delete</a>
-            </li>
-        {% endfor %}
-    </ul>
+	<h1 class="text-3xl font-bold mb-3">Upload Ordinances</h1>
+
+	<form action="{{ formAction }}" method="POST" enctype="multipart/form-data">
+		<input type="hidden" name="ordinanceId" value="{{ selectedOrdinance.ordinanceId ?? '' }}">
+
+		<div class="grid grid-cols-2 gap-3">
+			<label for="title">Title:</label>
+			<input type="text" id="title" name="title" required class="border-0 rounded p-2" value="{{ selectedOrdinance.title ?? '' }}">
+
+			<label for="authors">Authors:</label>
+			<input type="text" id="authors" name="authors" required class="border-0 rounded p-2" value="{{ selectedOrdinance.authors ?? '' }}">
+
+			<label for="description">Description:</label>
+			<textarea name="description" id="description" required class="border-0 rounded p-2">{{ selectedOrdinance.description ?? '' }}</textarea>
+
+			<label for="ordinanceFile">Upload File:</label>
+			<input type="file" id="ordinanceFile" name="ordinanceFile" required class="border-0 rounded p-2">
+		</div>
+
+		<button type="submit" class="bg-blue-500 text-white p-2 rounded">Upload Ordinance</button>
+	</form>
+
+	<h2 class="text-2xl mt-4 mb-3">Existing Ordinances</h2>
+
+	<div class="shadow-sm mb-3">
+		<table class="table-auto min-w-full text-sm md:text-base">
+			<thead>
+				<tr class="text-left">
+					<th class="border p-2 w-[70px]">Actions</th>
+					<th class="border p-2">Title</th>
+					<th class="border p-2">Description</th>
+					<th class="border p-2">Authors</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for ordinance in ordinances %}
+					<tr>
+						<td class="border p-2">
+							<a href="/admin/ordinances/edit/{{ ordinance.ordinanceId }}" class="bg-blue-500 rounded p-2">E</a>
+							<a href="/admin/ordinances/delete/{{ ordinance.ordinanceId }}" class="bg-red-500 rounded p-2">D</a>
+						</td>
+						<td class="border p-2">{{ ordinance.title }}</td>
+						<td class="border p-2">{{ ordinance.description }}</td>
+						<td class="border p-2">{{ ordinance.authors }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
 {% endblock %}

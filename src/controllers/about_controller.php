@@ -2,24 +2,25 @@
 namespace Controller;
 
 use Model\Member;
-use Model\History;
+use Model\Chapter;
 
 class AboutController {
-    private $historyModel;
+    private $chapterModel;
     private $memberModel;
     private $twig;
 
     public function __construct($pdo, $twig) {
-        $this->historyModel = new History($pdo);
+        $this->chapterModel = new Chapter($pdo);
         $this->memberModel = new Member($pdo);
         $this->twig = $twig;
     }
 
     public function showAbout() {
-        $history = $this->historyModel->getAllHistory();
+        $chapters = $this->chapterModel->getAllChapters();
         $members = $this->memberModel->getAllMembers();
+        
         echo $this->twig->render('about.twig', [
-            'histories' => $history, 
+            'chapters' => json_decode($chapters), 
             'members' => $members
         ]);
     }

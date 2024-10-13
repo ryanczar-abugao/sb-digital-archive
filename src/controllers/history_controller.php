@@ -1,52 +1,54 @@
 <?php
 namespace Controller;
 
-use Model\History;
+use Model\Chapter;
 
 class HistoryController {
     private $historyModel;
     private $twig;
 
     public function __construct($pdo, $twig) {
-        $this->historyModel = new History($pdo);
+        $this->historyModel = new Chapter($pdo);
         $this->twig = $twig;
     }
 
-    public function showHistory() {
-        $history = $this->historyModel->getAllHistory();
-        echo $this->twig->render('admin/history.twig', ['history' => $history]);
+    public function showChapters() {
+        $chapters = $this->historyModel->getAllChapters();
+        echo $this->twig->render('admin/history.twig', ['chapters' => json_decode($chapters)]);
     }
 
-    public function createHistory() {
+    public function createChapter() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $chapter = $_POST['chapter'];
             $title = $_POST['title'];
-            $content = $_POST['content'];
-            $createdBy = $_SESSION['userId'];
+            $createdBy = isset($_SESSION['userId']) ? $_SESSION['userId'] : 1;
+            $createdAt = date('Y-m-d H:i:s');
 
-            $this->historyModel->createHistory($chapter, $title, $content, $createdBy);
+            $this->historyModel->createChapter($chapter, $title, $createdBy, $createdAt);
 
             header("Location: /admin/history");
             exit;
         }
 
-        echo $this->twig->render('admin/create_history.twig');
+        $chapters = $this->historyModel->getAllChapters();
+        echo $this->twig->render('admin/history.twig', ['chapters' => $chapters]);
     }
 
-    public function updateHistory($id) {
-        $history = $this->historyModel->getHistory($id);
+    public function updateChapter($id) {
+        $history = $this->historyModel->getChapter($id);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $event = $_POST['event'];
-            $description = $_POST['description'];
-            $this->historyModel->updateHistory($id, $event, $description);
+            $chapter = $_POST['chapter'];
+            $title = $_POST['title'];
+            $content = $_POST['content'];
+            $this->historyModel->updateChapter($id, $chapter, $title, $content);
             header('Location: /admin/history');
             exit;
         }
         echo $this->twig->render('admin/update_history.twig', ['history' => $history]);
     }
 
-    public function deleteHistory($id) {
-        $this->historyModel->deleteHistory($id);
+    public function deleteChapter($id) {
+        $this->historyModel->deleteChapter($id);
         header('Location: /admin/history');
         exit;
     }

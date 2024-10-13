@@ -22,23 +22,26 @@ class Ordinance {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function createOrdinance($filename, $title, $authors, $createdBy) {
-        $stmt = $this->pdo->prepare("INSERT INTO ordinances (filename, title, authors, createdBy) VALUES (:filename, :title, :authors, :createdBy)");
+    public function createOrdinance($ordinanceFile, $title, $authors, $description, $createdBy) {
+        $stmt = $this->pdo->prepare("INSERT INTO ordinances (ordinanceFile, title, authors, description, createdBy, createdAt) VALUES (:ordinanceFile, :title, :authors, :description, :createdBy, NOW())");
         return $stmt->execute([
-            'filename' => $filename,
+            'ordinanceFile' => $ordinanceFile,
             'title' => $title,
             'authors' => $authors,
+            'description' => $description,
             'createdBy' => $createdBy
         ]);
     }
 
-    public function updateOrdinance($id, $filename, $title, $authors) {
-        $stmt = $this->pdo->prepare("UPDATE ordinances SET filename = :filename, title = :title, authors = :authors WHERE ordinanceId = :id");
+    public function updateOrdinance($id, $ordinanceFile, $title, $authors, $description, $updatedBy) {
+        $stmt = $this->pdo->prepare("UPDATE ordinances SET ordinanceFile = :ordinanceFile, title = :title, authors = :authors, description = :description, updatedBy = :updatedBy WHERE ordinanceId = :id");
         return $stmt->execute([
             'id' => $id,
-            'filename' => $filename,
+            'ordinanceFile' => $ordinanceFile,
             'title' => $title,
-            'authors' => $authors
+            'authors' => $authors,
+            'description' => $description,
+            'updatedBy' => $updatedBy
         ]);
     }
 

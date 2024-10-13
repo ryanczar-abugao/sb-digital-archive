@@ -3,7 +3,7 @@ require '../vendor/autoload.php';
 require '../config/database.php';
 require '../src/models/ordinance.php';
 require '../src/models/member.php';
-require '../src/models/history.php';
+require '../src/models/chapter.php';
 require '../src/controllers/ordinance_controller.php';
 require '../src/controllers/member_controller.php';
 require '../src/controllers/history_controller.php';
@@ -60,6 +60,12 @@ switch ($uri) {
     case '/admin/members':
         $memberController->showMembers();
         break;
+    case '/admin/members/create':
+        $memberController->createMember();
+        break;
+    case preg_match('/\/admin\/members\/edit\/(\d+)/', $uri, $matches) ? true : false:
+        $memberController->showSelectedMember($matches[1]);
+        break;
     case preg_match('/\/admin\/members\/update\/(\d+)/', $uri, $matches) ? true : false:
         $memberController->updateMember($matches[1]);
         break;
@@ -67,22 +73,31 @@ switch ($uri) {
         $memberController->deleteMember($matches[1]);
         break;
     case '/admin/history':
-        $historyController->showHistory();
+        $historyController->showChapters();
         break;
     case preg_match('/\/admin\/history\/update\/(\d+)/', $uri, $matches) ? true : false:
-        $historyController->updateHistory($matches[1]);
+        $historyController->updateChapter($matches[1]);
         break;
     case preg_match('/\/admin\/history\/delete\/(\d+)/', $uri, $matches) ? true : false:
-        $historyController->deleteHistory($matches[1]);
+        $historyController->deleteChapter($matches[1]);
         break;        
     case '/admin/ordinances':
         $ordinanceController->showOrdinances(1);
+        break;          
+    case '/admin/ordinances/create':
+        $ordinanceController->createOrdinance();
+        break;
+    case preg_match('/\/admin\/ordinances\/edit\/(\d+)/', $uri, $matches) ? true : false:
+        $ordinanceController->showSelectedOrdinance(1, $matches[1]);
         break;
     case preg_match('/\/admin\/ordinances\/update\/(\d+)/', $uri, $matches) ? true : false:
         $ordinanceController->updateOrdinance($matches[1]);
         break;
     case preg_match('/\/admin\/ordinances\/delete\/(\d+)/', $uri, $matches) ? true : false:
         $ordinanceController->deleteOrdinance($matches[1]);
+        break;             
+    case preg_match('/\/ordinances\/download\/(\d+)/', $uri, $matches) ? true : false:
+        $ordinanceController->downloadOrdinance($matches[1]);
         break;     
     default:
         http_response_code(404);

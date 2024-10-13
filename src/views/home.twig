@@ -3,6 +3,41 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <h1 class="text-3xl font-bold">Welcome to Our Website</h1>
-    <p>This is the home page.</p>
+    <section class="bg-blue-600 text-white py-20">
+        <div class="container mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Welcome to Sangunian Bayan Digital Archive</h1>
+            <p class="text-lg mb-8">Preserving the history and heritage of San Jose, Camarines Sur for future generations.</p>
+            <a href="#cta" class="bg-white text-blue-600 hover:bg-blue-100 py-3 px-6 rounded-lg font-semibold">Explore Now</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-12">Why the Sangunian Bayan Digital Archive?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4">Comprehensive Collection</h3>
+                    <p class="text-gray-600">Access a wide range of documents, records, and images that capture the rich history of San Jose, from local governance to community events.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4">User-Friendly Interface</h3>
+                    <p class="text-gray-600">Navigate through our archive with ease. Our intuitive design ensures that anyone can find the information they need quickly and efficiently.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4">Community Engagement</h3>
+                    <p class="text-gray-600">Join our community of local historians, students, and residents. Contribute your stories and documents to help us build a comprehensive archive.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section id="cta" class="bg-gray-800 text-white py-20">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-4">Join Us in Preserving Our Heritage</h2>
+            <p class="mb-8 p-4">Become a part of the Sangunian Bayan Digital Archive initiative. Help us document and celebrate our local history!</p>
+            <a href="#" class="bg-blue-600 hover:bg-blue-500 py-3 px-6 rounded-lg font-semibold">Get Involved</a>
+        </div>
+    </section>
 {% endblock %}

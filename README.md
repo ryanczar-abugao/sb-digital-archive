@@ -20,7 +20,7 @@ Before you begin, ensure that you have the following:
    Use the `cd` command to navigate to the directory where your application files are located. For example:
 
    ```bash
-   cd \\xampp\\htdocs\\sb-digital-archive\\public
+   cd \xampp\htdocs\sb-digital-archive\public
 
 #. **Run the App**
 

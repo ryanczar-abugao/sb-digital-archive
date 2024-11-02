@@ -1,74 +1,98 @@
-{% extends 'base.twig' %}
+{% extends '/admin/base.twig' %}
 
 {% block title %}Manage History
 {% endblock %}
 
 {% block content %}
-	<h1 class="text-3xl font-bold mb-3">History Management</h1>
+	<div class="p-8">
+		<h1 class="{{ css.textPrimary }} text-4xl font-bold mb-3">Manage History</h1>
+		<p class="{{ css.textSecondary }} text-lg mb-4">
+			This page allows you to manage historical chapters and their associated titles. You can add, edit, or delete chapters to maintain an accurate and comprehensive record of our history.
+		</p>
 
-	<div class="mb-3">
-		<form action="/admin/history" method="POST">
-			<input type="hidden" name="historyId" value="{{ history.historyId ?? '' }}">
-
-			<div class="grid grid-cols-2 gap-3">
-				<label for="chapter">Chapter Name:</label>
-				<input type="text" id="chapter" name="chapter" required class="border-0 rounded p-2" value="{{ history.chapter ?? '' }}">
-
-				<label for="title">Title:</label>
-				<input type="text" id="title" name="title" required class="border-0 rounded p-2" value="{{ history.title ?? '' }}">
-
-				<div class="shadow-sm mb-3 min-w-full">
-					<table class="table-auto min-w-full text-sm md:text-base">
-						<thead>
-							<tr class="text-left">
-								<th class="border p-2">
-									<button class="bg-blue-500 rounded p-2">A</button>
-								</th>
-								<th class="border p-2">Content</th>
-								<th class="border p-2">Images</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td class="border p-2">
-									<a href="/admin/history/{{ history.contentId }}" class="bg-red-500 rounded p-2">D</a>
-								</td>
-								<td class="border p-2">
-									<textarea id="content" name="content" required class="border-0 rounded p-2">
-										{{ history.content ?? '' }}
-									</textarea>
-								</td>
-								<td class="border p-2">
-									<input type="file" name="images" id="images" class="border-0 rounded p-2">
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+		<div popover id="historyForm" class="{{ css.formPopover }}">
+			<div class="{{ css.formPopoverHeader }}">
+				<h2 class="text-2xl font-bold">History Form</h2>
+				<button class="{{ css.formPopoverCloseBtn }}" popovertarget="historyForm">
+					<i class="{{ css.xmarkIcon }}"></i>
+				</button>
 			</div>
 
-			<button type="submit" class="bg-blue-500 text-white p-2 rounded">Save Chapter</button>
-		</form>
+			<div class="px-8 py-4">
+				<form action="{{ formAction }}" method="POST" enctype="multipart/form-data">
+					<input type="hidden" name="historyId" value="{{ selectedChapter.chapterId ?? '' }}">
+
+					<div class="grid grid-cols-1 gap-3">
+						<div>
+							<label for="chapter">Chapter Name:</label>
+							<input type="text" id="chapter" name="chapter" required class="{{ css.inputText }}" value="{{ selectedChapter.chapter ?? '' }}">
+						</div>
+
+						<div>
+							<label for="title">Title:</label>
+							<input type="text" id="title" name="title" required class="{{ css.inputText }}" value="{{ selectedChapter.title ?? '' }}">
+						</div>
+
+						<div>
+							<label for="contents">Contents:</label>
+							<trix-toolbar id="editor-toolbar"></trix-toolbar>
+							<div class="mb-6">
+								<input id="contents" type="hidden" name="contents" value="{{ selectedChapter.contents ?? '' }}">
+								<trix-editor toolbar="editor-toolbar" input="contents"></trix-editor>
+							</div>
+						</div>
+					</div>
+
+					<div class="{{ css.formPopoverBtnContainer }}">
+						<button type="submit" class="{{ css.saveBtn }}">
+							<i class="{{ css.saveIcon }}"></i>
+							Save
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<button class="{{ css.formPopoverBtn }}" popovertarget="historyForm" id="formBtn">
+			<i class="{{ css.editIcon }}"></i>
+			History Form</button>
+
+		<hr class="{{ css.seperator }}">
+
+		<div class="{{ css.tableContainer }}">
+			<table class="{{ css.table }}">
+				<thead>
+					<tr class="{{ css.textPrimary }}">
+						<th class="{{ css.tableHeader }} w-[25px]">Actions</th>
+						<th class="{{ css.tableHeader }}">Chapter</th>
+						<th class="{{ css.tableHeader }}">Title</th>
+						<th class="{{ css.tableHeader }} min-w-[170px]">Date Created</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for chapter in chapters %}
+						<tr class="{{ css.tableRows }} {{ css.textSecondary }}">
+							<td class="{{ css.tableRowData }}">
+								<div class="{{ css.actionContainer }}">
+									<a href="/admin/history/edit/{{ chapter.chapterId }}" class="{{ css.editBtn }}">
+										<i class="{{ css.editIcon }}"></i>
+										<span>Edit</span>
+									</a>
+									<a href="/admin/history/delete/{{ chapter.chapterId }}" class="{{ css.deleteBtn }}">
+										<i class="{{ css.deleteIcon }}"></i>
+										<span>Delete</span>
+									</a>
+								</div>
+							</td>
+							<td class="{{ css.tableRowData }}">{{ chapter.chapter }}</td>
+							<td class="{{ css.tableRowData }}">{{ chapter.title }}</td>
+							<td class="{{ css.tableRowData }}">{{ chapter.createdAt }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	</div>
 
-	<h2 class="text-2xl mt-4">Existing Chapter Entries</h2>
-	{% for chapter in chapters %}
-		<div class="mb-3">
-			<h3>{{ chapter.chapter }}</h3>
-			<h4>{{ chapter.title }}</h4>
-
-			{% for content in chapter.contents %}
-				<div class="mb-2">
-					<p>{{ content.content }}</p>
-
-					{% if content.leftImage %}
-						<img src="{{ content.leftImage }}" alt="Left Image"/>
-					{% endif %}
-					{% if content.rightImage %}
-						<img src="{{ content.rightImage }}" alt="Right Image"/>
-					{% endif %}
-				</div>
-			{% endfor %}
-		</div>
-	{% endfor %}
+	<script src="/assets/js/history.js"></script>
 {% endblock %}

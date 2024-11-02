@@ -1,56 +1,107 @@
-{% extends 'base.twig' %}
+{% extends '/admin/base.twig' %}
 
-{% block title %}Upload Ordinances
+{% block title %}Manage Ordinances
 {% endblock %}
 
 {% block content %}
-	<h1 class="text-3xl font-bold mb-3">Upload Ordinances</h1>
+	<div class="p-8">
+		<h1 class="{{ css.textPrimary }} text-4xl font-bold mb-3">Manage Ordinances</h1>
+		<p class="{{ css.textSecondary }} text-lg mb-4">
+			This page allows you to manage all ordinances, including creating, editing, and deleting entries. Use the form below to upload new ordinances and maintain a comprehensive record for your reference.
+		</p>
 
-	<form action="{{ formAction }}" method="POST" enctype="multipart/form-data">
-		<input type="hidden" name="ordinanceId" value="{{ selectedOrdinance.ordinanceId ?? '' }}">
+		<div popover id="ordinanceForm" class="{{ css.formPopover }}">
+			<div class="{{ css.formPopoverHeader }}">
+				<h2 class="text-2xl font-bold">Ordinance Form</h2>
+				<button class="{{ css.formPopoverCloseBtn }}" popovertarget="ordinanceForm">
+					<i class="{{ css.xmarkIcon }}"></i>
+				</button>
+			</div>
 
-		<div class="grid grid-cols-2 gap-3">
-			<label for="title">Title:</label>
-			<input type="text" id="title" name="title" required class="border-0 rounded p-2" value="{{ selectedOrdinance.title ?? '' }}">
+			<div class="px-8 py-4">
+				<form action="{{ formAction }}" method="POST" enctype="multipart/form-data">
+					<input type="hidden" name="ordinanceId" value="{{ selectedOrdinance.ordinanceId ?? '' }}">
 
-			<label for="authors">Authors:</label>
-			<input type="text" id="authors" name="authors" required class="border-0 rounded p-2" value="{{ selectedOrdinance.authors ?? '' }}">
+					<div class="grid grid-cols-1 gap-3 mb-3">
+						<div>
+							<label for="ordinanceFile">Upload File:</label>
+							<div class="my-3">
+								<input type="file" id="ordinanceFile" name="ordinanceFile" class="hidden" accept=".pdf">
+								<label for="ordinanceFile" class="{{ css.inputFilePdf }}">
+									<i class="{{ css.filePdfIcon }}"></i>
+									Choose PDF File
+								</label>
+								<span id="fileName" class="ml-4 text-gray-700"></span>
+							</div>
+						</div>
 
-			<label for="description">Description:</label>
-			<textarea name="description" id="description" required class="border-0 rounded p-2">{{ selectedOrdinance.description ?? '' }}</textarea>
+						<div>
+							<label for="title">Title:</label>
+							<input type="text" id="title" name="title" required class="{{ css.inputText }}" value="{{ selectedOrdinance.title ?? '' }}">
+						</div>
+						
+						<div>
+							<label for="authors">Authors:</label>
+							<input type="text" id="authors" name="authors" required class="{{ css.inputText }}" value="{{ selectedOrdinance.authors ?? '' }}">
+						</div>
 
-			<label for="ordinanceFile">Upload File:</label>
-			<input type="file" id="ordinanceFile" name="ordinanceFile" required class="border-0 rounded p-2">
+						<div>
+							<label for="description">Description:</label>
+							<textarea name="description" id="description" required class="{{ css.inputText }}">{{ selectedOrdinance.description ?? '' }}</textarea>
+						</div>
+					</div>
+
+					<div class="{{ css.formPopoverBtnContainer }}">
+						<button type="submit" class="{{ css.saveBtn }}">
+							<i class="{{ css.saveIcon }}"></i>
+							Save
+						</button>
+					</div>
+				</form>
+			</div>
 		</div>
 
-		<button type="submit" class="bg-blue-500 text-white p-2 rounded">Upload Ordinance</button>
-	</form>
+		<button class="{{ css.formPopoverBtn }}" popovertarget="ordinanceForm" id="formBtn">
+			<i class="{{ css.editIcon }}"></i>
+			Ordinance Form</button>
 
-	<h2 class="text-2xl mt-4 mb-3">Existing Ordinances</h2>
+		<hr class="{{ css.seperator }}">
 
-	<div class="shadow-sm mb-3">
-		<table class="table-auto min-w-full text-sm md:text-base">
-			<thead>
-				<tr class="text-left">
-					<th class="border p-2 w-[70px]">Actions</th>
-					<th class="border p-2">Title</th>
-					<th class="border p-2">Description</th>
-					<th class="border p-2">Authors</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for ordinance in ordinances %}
-					<tr>
-						<td class="border p-2">
-							<a href="/admin/ordinances/edit/{{ ordinance.ordinanceId }}" class="bg-blue-500 rounded p-2">E</a>
-							<a href="/admin/ordinances/delete/{{ ordinance.ordinanceId }}" class="bg-red-500 rounded p-2">D</a>
-						</td>
-						<td class="border p-2">{{ ordinance.title }}</td>
-						<td class="border p-2">{{ ordinance.description }}</td>
-						<td class="border p-2">{{ ordinance.authors }}</td>
+		<div class="{{ css.tableContainer }}">
+			<table class="{{ css.table }}">
+				<thead>
+					<tr class="text-left {{ css.textPrimary }}">
+						<th class="{{ css.tableHeader }}">Actions</th>
+						<th class="{{ css.tableHeader }} min-w-[150px]">Title</th>
+						<th class="{{ css.tableHeader }} min-w-[300px]">Description</th>
+						<th class="{{ css.tableHeader }} min-w-[150px]">Authors</th>
+						<th class="{{ css.tableHeader }} min-w-[170px]">Date Created</th>
 					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{% for ordinance in ordinances %}
+						<tr class="{{ css.tableRows }} {{ css.textSecondary }} {{ loop.index % 2 == 0 ? 'bg-gray-50' : 'bg-white' }}">
+							<td class="{{ css.tableRowData }}">
+								<div class="{{ css.actionContainer }}">
+									<a href="/admin/ordinances/edit/{{ ordinance.ordinanceId }}" class="{{ css.editBtn }}">
+										<i class="{{ css.editIcon }} col-span-1"></i>
+										<span>Edit</span>
+									</a>
+									<a href="/admin/ordinances/delete/{{ ordinance.ordinanceId }}" class="{{ css.deleteBtn }}">
+										<i class="{{ css.deleteIcon }} col-span-1"></i>
+										<span>Delete</span>
+									</a>
+								</div>
+							</td>
+							<td class="{{ css.tableRowData }}">{{ ordinance.title }}</td>
+							<td class="{{ css.tableRowData }}">{{ ordinance.description }}</td>
+							<td class="{{ css.tableRowData }}">{{ ordinance.authors }}</td>
+							<td class="{{ css.tableRowData }}">{{ ordinance.createdAt }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	</div>
+	<script src="/assets/js/ordinances.js"></script>
 {% endblock %}

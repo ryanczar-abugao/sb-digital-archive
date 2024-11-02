@@ -13,62 +13,18 @@ class Chapter
         $this->pdo = $pdo;
     }
 
-    public function getAllChapters()
+    public function getChapters()
     {
-        $stmt = $this->pdo->prepare("
-            SELECT 
-                c.chapterId,
-                c.chapter,
-                c.title,
-                c.createdBy,
-                c.createdAt,
-                c.userId,
-                cc.contentId,
-                cc.leftImage,
-                cc.rightImage,
-                cc.content
-            FROM 
-                chapters c 
-            LEFT JOIN 
-                chaptercontents cc ON c.chapterId = cc.chapterId
-        ");
+        $stmt = $this->pdo->prepare("SELECT * FROM chapters");
         $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
-        $groupedChapters = [];
-
-        foreach ($results as $row) {
-            $chapterId = $row['chapterId'];
-
-            // Initialize chapter if not already done
-            if (!isset($groupedChapters[$chapterId])) {
-                $groupedChapters[$chapterId] = [
-                    'chapterId' => $chapterId,
-                    'chapter' => $row['chapter'],
-                    'title' => $row['title'],
-                    'createdBy' => $row['createdBy'],
-                    'createdAt' => $row['createdAt'],
-                    'userId' => $row['userId'],
-                    'contents' => []
-                ];
-            }
-
-            // Add content to the chapter's contents
-            if ($row['contentId']) {
-                $groupedChapters[$chapterId]['contents'][] = [
-                    'contentId' => $row['contentId'],
-                    'leftImage' => $row['leftImage'],
-                    'rightImage' => $row['rightImage'],
-                    'content' => $row['content']
-                ];
-            }
-        }
-
-        // Re-index the array
-        $groupedChapters = array_values($groupedChapters);
-
-        // Convert to JSON
-        return json_encode($groupedChapters, JSON_PRETTY_PRINT);
+    public function getChaptersWithContents()
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM chapters");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getChapter($id)
@@ -78,24 +34,28 @@ class Chapter
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function createChapter($chapter, $title, $createdBy, $createdAt)
+    public function createChapter($chapter, $title, $contents, $createdBy, $createdAt)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO chapters (chapter, title, createdBy, createdAt) VALUES (:chapter, :title, :createdBy, :createdAt)");
+        $stmt = $this->pdo->prepare("INSERT INTO chapters (chapter, title, contents, createdBy, createdAt) VALUES (:chapter, :title, :contents, :createdBy, :createdAt)");
+
         return $stmt->execute([
             'chapter' => $chapter,
             'title' => $title,
+            'contents' => $contents,
             'createdBy' => $createdBy,
             'createdAt' => $createdAt
         ]);
     }
 
-    public function updateChapter($id, $chapter, $title)
+    public function updateChapter($id, $chapter, $title, $contents, $updatedBy)
     {
-        $stmt = $this->pdo->prepare("UPDATE chapters SET chapter = :chapter, title = :title WHERE chapterId = :id");
+        $stmt = $this->pdo->prepare("UPDATE chapters SET chapter = :chapter, title = :title, contents = :contents, updatedBy = :updatedBy WHERE chapterId = :id");
         return $stmt->execute([
             'id' => $id,
             'chapter' => $chapter,
-            'title' => $title
+            'title' => $title,
+            'contents' => $contents,
+            'updatedBy' => $updatedBy,
         ]);
     }
 

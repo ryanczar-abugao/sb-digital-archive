@@ -5,52 +5,63 @@
 {% endblock %}
 
 {% block content %}
-	<h1 class="text-3xl font-bold mb-3">About Us</h1>
+	<div class="p-8">
+		<h1 class="{{ css.textPrimary }} text-4xl font-bold mb-3">About Us</h1>
 
-	<div class="mb-3">
-		<h2 class="text-2xl font-bold">History</h2>
-		{% for chapter in chapters %}
-			<div class="shadow-md bg-gray-100 rounded p-2 mb-3">
-				<h3 class="font-bold">{{ chapter.chapter }}</h3>
-				<h4 class="mb-3">{{ chapter.title }}</h4>
+		<p class="mb-4 text-lg {{ css.textSecondary }}">
+			Welcome to the About Us page, where you can learn more about the history and members of the Sangguniang Bayan. Explore our historical chapters and meet the members committed to enhancing the governance and welfare of our locality.
+		</p>
 
-				{% for content in chapter.contents %}
-					<div class="mb-2">
-						<p>{{ content.content }}</p>
+		<hr class="{{ css.separator }}">
 
-						{% if content.leftImage %}
-							<img src="{{ content.leftImage }}" alt="Left Image"/>
-						{% endif %}
-						{% if content.rightImage %}
-							<img src="{{ content.rightImage }}" alt="Right Image"/>
-						{% endif %}
+		<div>
+			<h2 class="{{ css.textPrimary }} text-2xl font-bold mb-3">SB Members</h2>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+				{% for member in members %}
+					<div class="{{ css.card }}">
+						<div class="flex gap-2">
+							<img src="{{ member.profilePicture }}" alt="" class="{{ css.cardImage }}">
+							<div>
+								<h3 class="{{ css.cardTitle }}">
+									{{ member.firstName }}
+									{{ member.lastName }}
+								</h3>
+								<h3 class="{{ css.cardSubTitle }}">
+									{{ member.position }}
+								</h3>
+							</div>
+						</div>
+
+						<p class="{{ css.cardDescription }} mb-3">
+							<i class="fas fa-fw fa-location-dot"></i> <span>{{ member.address }}</span>
+						</p>
+
+						<p class="{{ css.cardDescription }}">
+							{{ member.description }}
+						</p>
 					</div>
 				{% endfor %}
 			</div>
-		{% endfor %}
-	</div>
+		</div>
 
-	<div>
-		<h2 class="text-2xl font-bold mb-3">Sangguniang Bayan Members</h2>
-		{% for member in members %}
-			<div class="shadow-md bg-gray-100 rounded p-2 mb-3">
-				<img src="{{ member.profilePicture }}" alt="" class="w-[60px] h-[60px] rounded">
-				<h3>
-					<strong>
-						Name:
-					</strong>
-					{{ member.firstName }}
-					{{ member.lastName }}
-				</h3>
-				<h3>
-					<strong>
-						Position
-					</strong>
-					{{ member.position }}
-				</h3>
-				<p>{{ member.description }}</p>
-				<a href="/members/{{ member.memberId }}" class="text-sky-600">View Profile</a>
+		<hr class="{{ css.separator }}">
+
+		<div class="mb-3">
+			<h2 class="{{ css.textPrimary }} text-2xl font-bold mb-3">History</h2>
+
+			<div class="grid grid-cols-1 gap-3 mb-6">
+				{% for chapter in chapters %}
+					<div class="{{ css.card }}">
+						<h3 class="{{ css.cardTitle }}">{{ chapter.chapter }}</h3>
+						<h4 class="{{ css.cardSubTitle }}">{{ chapter.title }}</h4>
+
+						<div [isHtml]="true" class="{{ css.cardDescription }}">
+							{{ chapter.contents | raw}}
+						</div>
+					</div>
+				{% endfor %}
 			</div>
-		{% endfor %}
+		</div>
 	</div>
 {% endblock %}

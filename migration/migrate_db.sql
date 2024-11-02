@@ -74,6 +74,7 @@ CREATE TABLE chapters (
     chapterId INT AUTO_INCREMENT PRIMARY KEY,
     chapter VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
+    contents TEXT NOT NULL,
     createdBy VARCHAR(50) NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedBy VARCHAR(50) NULL,
@@ -82,13 +83,13 @@ CREATE TABLE chapters (
     FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE SET NULL
 );
 
-CREATE TABLE chaptercontents (
-    contentId INT AUTO_INCREMENT PRIMARY KEY,
-    leftImage VARCHAR(255) NOT NULL,
-    rightImage VARCHAR(255) NOT NULL,
-    content VARCHAR(255) NOT NULL,
+CREATE TABLE attachments (
+    attachmentId INT AUTO_INCREMENT PRIMARY KEY,
     chapterId INT,
-    FOREIGN KEY (chapterId) REFERENCES chapters(chapterId) ON DELETE SET NULL
+    ordinanceId INT,
+    url VARCHAR(255) NOT NULL,
+    FOREIGN KEY (chapterId) REFERENCES chapters(chapterId) ON DELETE CASCADE,
+    FOREIGN KEY (ordinanceId) REFERENCES ordinances(ordinanceId) ON DELETE CASCADE
 );
 
 INSERT INTO systemsettings (systemName, contactNum, address, logo, createdAt)
@@ -106,16 +107,10 @@ VALUES
 ('Michael', 'J', 'Johnson', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum saepe, veniam est nemo odit doloremque necessitatibus quos modi eum asperiores.', 'male', '456 Oak St, Cityville', 'Treasurer', 'michael.png', 'Admin', NOW(), 1),
 ('Lisa', 'M', 'Brown', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum saepe, veniam est nemo odit doloremque necessitatibus quos modi eum asperiores.', 'female', '789 Pine St, Cityville', 'Member', 'lisa.png', 'Admin', NOW(), 2);
 
-INSERT INTO chapters (chapter, title, createdBy, createdAt, userId)
+INSERT INTO chapters (chapter, title, contents, createdBy, createdAt, userId)
 VALUES
-('Chapter 1', 'The Founding of Cityville', 'Jane Mary', NOW(), 3),
-('Chapter 2', 'Expansion of Cityville', 'Admin', NOW(), 1);
-
-INSERT INTO chaptercontents (leftImage, rightImage, content, chapterId)
-VALUES
-(NULL, NULL, 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Itaque voluptatibus aspernatur ut illo fuga, culpa numquam voluptatum voluptates, ipsum accusantium ratione possimus ex reprehenderit et odit. Libero officia iste velit.', 1),
-(NULL, NULL, 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Itaque voluptatibus aspernatur ut illo fuga, culpa numquam voluptatum voluptates, ipsum accusantium ratione possimus ex reprehenderit et odit. Libero officia iste velit.', 1),
-(NULL, NULL, 'In 1920, Cityville expanded...', 2);
+('Chapter 1', 'The Founding of Cityville', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum saepe, veniam est nemo odit doloremque necessitatibus quos modi eum asperiores.', 'Jane Mary', NOW(), 3),
+('Chapter 2', 'Expansion of Cityville', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum saepe, veniam est nemo odit doloremque necessitatibus quos modi eum asperiores.', 'Admin', NOW(), 1);
 
 INSERT INTO credentials (username, password, createdAt, userId)
 VALUES 

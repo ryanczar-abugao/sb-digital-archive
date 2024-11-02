@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="SB Digital Archive Admin - Manage archives and data effectively.">
+		<link rel="icon" href="/assets/uploads/SBLogo.ico"/>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+		<link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
+		<script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+		<title>
+			{% block title %}SB Digital Archive Admin
+			{% endblock %}
+		</title>
+	</head>
+	<body class="{{ css.bg }} text-sm md:text-base grid grid-cols-12 h-screen">
+		<nav id="sidebar" class="{{ css.sidebar }} hidden 2xl:block 2xl:col-span-2">
+			<div class="flex items-center p-4 pb-0 {{ css.textAccent }}">
+				<img src="/assets/uploads/SBLogo.png" alt="Sangunian Bayan Logo" class="w-[25px] h-[25px] mr-2"/>
+				<h1 class="text-lg font-bold {{ css.textWhite }}">SB ARCHIVE</h1>
+			</div>
+
+			<ul class="{{ css.sidebarNavs }}">
+				{% if isLoggedIn %}
+					<li class="{{ css.sidebarNav }}">
+						<a href="/admin/dashboard" class="{{ css.headerNavBtn }} {{ currentPage == 'dashboard' ? css.navActive : '' }}" aria-label="Go to Dashboard">
+							<i class="{{ css.gauge }}"></i>	<span>Dashboard</span>
+						</a>
+					</li>
+					<li class="{{ css.sidebarNav }}">
+						<a href="/admin/members" class="{{ css.headerNavBtn }} {{ currentPage == 'members' ? css.navActive : '' }}" aria-label=" view members">
+							<i class="{{ css.peopleRoofIcon }}"></i>	<span>Members</span>
+						</a>
+					</li>
+					<li class="{{ css.sidebarNav }}">
+						<a href="/admin/history" class="{{ css.headerNavBtn }} {{ currentPage == 'history' ? css.navActive : '' }}" aria-label=" view history">
+							<i class="{{ css.clockRotateLeftIcon }}"></i>	<span>History</span>
+						</a>
+					</li>
+					<li class="{{ css.sidebarNav }}">
+						<a href="/admin/ordinances" class="{{ css.headerNavBtn }} {{ currentPage == 'ordinances' ? css.navActive : '' }}" aria-label=" view ordinances">
+							<i class="{{ css.scrollIcon }}"></i>	<span>Ordinances</span>
+						</a>
+					</li>
+					<li class="{{ css.sidebarNav }}">
+						<a href="/admin/logout" class="{{ css.headerNavBtn }}" aria-label="Logout">
+							<i class="{{ css.rightFromBracket }}"></i>	<span>Logout</span>
+						</a>
+					</li>
+				{% else %}
+					<li class="{{ css.sidebarNav }}">
+						<a href="/" class="{{ css.headerNavBtn }}" aria-label="Guest's Home">Guest's Home</a>
+					</li>
+					<li class="{{ css.sidebarNav }}">
+						<a href="/admin/login" class="{{ css.headerNavBtn }} {{ currentPage == 'login' ? css.navActive : '' }}" aria-label="Login">Login</a>
+					</li>
+				{% endif %}
+			</ul>
+		</nav>
+
+		<div class="col-span-12 2xl:col-span-10">
+			<header class="{{ css.header }}">
+				<div class="flex items-center mb-5 2xl:mb-0 2xl:hidden">
+					<img src="/assets/uploads/SBLogo.png" alt="Sangunian Bayan Logo" class="w-[25px] h-[25px] mr-2"/>
+					<h1 class="text-lg font-bold {{ css.textWhite }}">SB ARCHIVE</h1>
+				</div>
+
+				<button class="rounded hidden 2xl:block">
+					<i class="fas fa-bars fa-fw fa-lg"></i>
+				</button>
+
+				<nav class="2xl:hidden">
+					{% if isLoggedIn %}
+						<a href="/admin/dashboard" class="{{ css.headerNavBtn }} {{ currentPage == 'dashboard' ? css.navActive : '' }}" aria-label="Go to Dashboard">Dashboard</a>
+						<a href="/admin/members" class="{{ css.headerNavBtn }} {{ currentPage == 'members' ? css.navActive : '' }}" aria-label=" view members">Members</a>
+						<a href="/admin/history" class="{{ css.headerNavBtn }} {{ currentPage == 'history' ? css.navActive : '' }}" aria-label=" view history">History</a>
+						<a href="/admin/ordinances" class="{{ css.headerNavBtn }} {{ currentPage == 'ordinances' ? css.navActive : '' }}" aria-label=" view ordinances">Ordinances</a>
+						<a href="/admin/logout" class="{{ css.headerNavBtn }}" aria-label="Logout">Logout</a>
+					{% else %}
+						<a href="/" class="{{ css.headerNavBtn }}" aria-label="Guest's Home">Guest's Home</a>
+						<a href="/admin/login" class="{{ css.headerNavBtn }} {{ currentPage == 'login' ? css.navActive : '' }}" aria-label="Login">Login</a>
+					{% endif %}
+				</nav>
+			</header>
+
+			<main class="min-h-[calc(100vh-152px)] md:min-h-[calc(100vh-112px)] container mx-auto"> 
+				{% block content %}{% endblock %}
+			</main>
+
+			<footer class="{{ css.footer }}">
+				<div class="container mx-auto text-center">
+					<p>&copy; 2024 Sangunian Bayan. All rights reserved.</p>
+				</div>
+			</footer>
+		</div>
+
+		<script src="/assets/js/common.js"></script>
+		<script src="https://unpkg.com/tailwindcss-cdn@3.4.10/tailwindcss.js"></script>
+		<script src="https://unpkg.com/tailwindcss-cdn@3.4.10/tailwindcss-with-all-plugins.js"></script>
+	</body>
+</html>

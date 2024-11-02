@@ -4,22 +4,34 @@
 {% endblock %}
 
 {% block content %}
-	<h1 class="text-3xl font-bold mb-3">Ordinances</h1>
+	<div class="p-8">
+		<h1 class="{{ css.textPrimary }} text-4xl font-bold mb-3">Ordinances</h1>
 
-	{% for ordinance in ordinances %}
-		<div class="shadow-md bg-gray-100 rounded p-2 mb-3">
-			<h2>
-				<strong>
-					Title:
-				</strong>
-				{{ ordinance.title }}</h2>
-			<h3>
-				<strong>
-					Authors:
-				</strong>
-				{{ ordinance.authors }}</h3>
-				<p>{{ ordinance.description }}</p>
-			<a href="/ordinances/download/{{ ordinance.ordinanceId }}" class="text-sky-600">Download</a>
+		<p class="{{ css.textSecondary }} mb-4 text-lg">
+			Welcome to the Ordinances section, where you can view and manage all legislative documents pertaining to our local governance. Ordinances serve as essential tools for establishing laws, regulations, and guidelines that govern our community. 
+		</p>
+
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+			{% for ordinance in ordinances %}
+				<div class="{{ css.card }}">
+					<h2 class="{{ css.cardTitle }}">
+						{{ ordinance.title }}
+					</h2>
+					<h3 class="{{ css.cardSubTitle }}">
+						{{ ordinance.authors }}
+					</h3>
+					<p class="{{ css.cardDescription }}">
+						{{ ordinance.description }}
+					</p>
+
+					<div class="{{ css.cardBtnContainer }} mt-4">
+						<a href="/ordinances/preview/{{ ordinance.ordinanceId }}" class="{{ css.cardPrimaryBtn }}">Preview</a>
+						<a href="/ordinances/download/{{ ordinance.ordinanceId }}" class="{{ css.cardSecondaryBtn }}">
+							<i class="{{ css.downloadIcon }}"></i>
+						</a>
+					</div>
+				</div>
+			{% endfor %}
 		</div>
-	{% endfor %}
+	</div>
 {% endblock %}

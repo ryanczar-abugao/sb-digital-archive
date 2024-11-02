@@ -2,16 +2,22 @@
 namespace Controller;
 
 use Model\Member;
+use Constants\CssConstants;
+use Helpers\SessionHelpers;
 
-class MemberController {
+class MemberController{
     private $memberModel;
     private $twig;
     private $defaultFormAcion;
     private $baseDir;
     private $fileBaseName;
+    private $cssConstants;
+    private $sessionHelper;
 
     public function __construct($pdo, $twig) {
         $this->memberModel = new Member($pdo);
+        $this->cssConstants = new CssConstants();
+        $this->sessionHelper = new SessionHelpers();
         $this->twig = $twig;
         $this->defaultFormAcion = '/admin/members/create';
         $this->baseDir = "C://xampp/htdocs/sb-digital-archive/public";
@@ -19,25 +25,42 @@ class MemberController {
     }
 
     public function showMembers() {
+        session_start();
+
+        $this->sessionHelper->verifyLoggedUser();
+
         $members = $this->memberModel->getAllMembers();
         echo $this->twig->render('admin/members.twig', [
             'members' => $members, 
-            'formAction' => $this->defaultFormAcion
+            'formAction' => $this->defaultFormAcion,
+            'css' => $this->cssConstants,
+            'isLoggedIn' => isset($_SESSION['userId']), 
+            'currentPage' => 'members'
         ]);
     }
 
     public function showSelectedMember($id) {
+        session_start();
+
+        $this->sessionHelper->verifyLoggedUser();
+
         $members = $this->memberModel->getAllMembers();
         $member = $this->memberModel->getMember($id);
         echo $this->twig->render('admin/members.twig', [
             'members' => $members, 
             'selectedMember' => $member,
-            'formAction' => "/admin/members/update/$id"
+            'formAction' => "/admin/members/update/$id",
+            'css' => $this->cssConstants,
+            'isLoggedIn' => isset($_SESSION['userId']), 
+            'currentPage' => 'members'
         ]);
     }
     
     public function createMember() {
         session_start();
+
+        $this->sessionHelper->verifyLoggedUser();
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['userId'])) {
             // Validate and process input
             $firstName = $_POST['firstName'];
@@ -71,12 +94,18 @@ class MemberController {
         $members = $this->memberModel->getAllMembers();
         echo $this->twig->render('admin/members.twig', [
             'members' => $members, 
-            'formAction' => $this->defaultFormAcion
+            'formAction' => $this->defaultFormAcion,
+            'css' => $this->cssConstants,
+            'isLoggedIn' => isset($_SESSION['userId']), 
+            'currentPage' => 'members'
         ]);
     }
 
     public function updateMember($id) {
         session_start();
+
+        $this->sessionHelper->verifyLoggedUser();
+
         $selectedMember = $this->memberModel->getMember($id);
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['userId'])) {
             // Validate and process input
@@ -100,6 +129,7 @@ class MemberController {
                 move_uploaded_file($_FILES['profilePicture']['tmp_name'], $fullPath);
                 $profilePicture = $targetPath;
             }
+            
 
             $this->memberModel->updateMember($id, $firstName, $middleName, $lastName, $description, $gender, $address, $position, $profilePicture, $updatedBy);
             header("Location: /admin/members/edit/$id");
@@ -110,11 +140,18 @@ class MemberController {
         echo $this->twig->render('admin/members.twig', [
             'members' => $members, 
             'selectedMember' => $selectedMember,
-            'formAction' => $this->defaultFormAcion
+            'formAction' => $this->defaultFormAcion,
+            'css' => $this->cssConstants,
+            'isLoggedIn' => isset($_SESSION['userId']), 
+            'currentPage' => 'members'
         ]);
     }
 
     public function deleteMember($id) {
+        session_start();
+        
+        $this->sessionHelper->verifyLoggedUser();
+
         $this->memberModel->deleteMember($id);
         header('Location: /admin/members');
         exit;

@@ -1,76 +1,139 @@
-{% extends 'base.twig' %}
+{% extends '/admin/base.twig' %}
 
-{% block title %}Manage Members
+{% block title %}
+	Manage Members
 {% endblock %}
 
 {% block content %}
-	<h1 class="text-3xl font-bold mb-3">Sangguniang Bayan Members</h1>
+	<div class="p-8">
+		<h1 class="{{ css.textPrimary }} text-4xl font-bold mb-3">Manage Members</h1>
+		<p class="{{ css.textSecondary }} text-lg mb-4">
+			This page allows you to manage member profiles, including adding new members, updating existing information, and removing members as needed. Use the form below to input or modify member details.
+		</p>
 
-	<form action="{{ formAction }}" method="POST" enctype="multipart/form-data">
-		<input type="hidden" name="memberId" value="{{ selectedMember.memberId ?? '' }}">
+		<div popover id="memberForm" class="{{ css.formPopover }}">
+			<div class="{{ css.formPopoverHeader }}">
+				<h2 class="text-2xl font-bold">Member Form</h2>
+				<button class="{{ css.formPopoverCloseBtn }}" popovertarget="memberForm">
+					<i class="{{ css.xmarkIcon }}"></i>
+				</button>
+			</div>
 
-		<div class="mb-3 grid grid-cols-2 gap-3">
-			<label for="firstName">First Name:</label>
-			<input type="text" id="firstName" name="firstName" required class="rounded border-0 p-2" value="{{ selectedMember.firstName ?? '' }}">
+			<div class="px-8 py-4">
+				<div class="mb-3 w-full flex justify-start">
+					<img src="{{ selectedMember.profilePicture }}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150';" alt="" class="h-[150px] rounded-lg shadow-sm">
+				</div>
 
-			<label for="middleName">Middle Name:</label>
-			<input type="text" id="middleName" name="middleName" class="rounded border-0 p-2" value="{{ selectedMember.middleName ?? '' }}">
+				<form action="{{ formAction }}" method="POST" enctype="multipart/form-data">
+					<input type="hidden" name="memberId" value="{{ selectedMember.memberId ?? '' }}">
 
-			<label for="lastName">Last Name:</label>
-			<input type="text" id="lastName" name="lastName" required class="rounded border-0 p-2" value="{{ selectedMember.lastName ?? '' }}">
-			
-			<label for="description">Description: </label>
-			<textarea name="description" id="description" class="rounded border-0 p-2">{{ selectedMember.description ?? '' }}</textarea>
+					<div class="flex flex-col items-start mb-3">
+						<input type="file" id="profilePicture" name="profilePicture" class="hidden">
+						<label for="profilePicture" class="{{ css.inputFileImage }}">
+							<i class="{{ css.imageIcon }}"></i>
+							Upload Profile Picture
+						</label>
+						<span id="fileName" class="ml-4 {{ css.textSecondary }}"></span>
+					</div>
 
-			<label for="gender">Gender:</label>
-			<select id="gender" name="gender" class="rounded border-0 p-2">
-				<option value="male" {% if selectedMember.gender == 'male' %} selected {% endif %}>Male</option>
-				<option value="female" {% if selectedMember.gender == 'female' %} selected {% endif %}>Female</option>
-			</select>
-			
-			<label for="address">Address:</label>
-			<input type="text" id="address" name="address" required class="rounded border-0 p-2" value="{{ selectedMember.address ?? '' }}">
-			
-			<label for="position">Position:</label>
-			<input type="text" id="position" name="position" required class="rounded border-0 p-2" value="{{ selectedMember.position ?? '' }}">
-			
-			<label for="profilePicture">Profile Picture:</label>
-			<input type="file" id="profilePicture" name="profilePicture" class="rounded border-0 p-2">
+					<div class="mb-3 grid grid-cols-1 gap-3">
+						<div class="grid grid-cols-subgrid grid-cols-1 md:grid-cols-3 gap-3">
+							<div>
+								<label for="firstName">First Name:</label>
+								<input type="text" id="firstName" name="firstName" required class="{{ css.inputText }}" value="{{ selectedMember.firstName ?? '' }}">
+							</div>
+							<div>
+								<label for="middleName">Middle Name:</label>
+								<input type="text" id="middleName" name="middleName" class="{{ css.inputText }}" value="{{ selectedMember.middleName ?? '' }}">
+							</div>
+							<div>
+								<label for="lastName">Last Name:</label>
+								<input type="text" id="lastName" name="lastName" required class="{{ css.inputText }}" value="{{ selectedMember.lastName ?? '' }}">
+							</div>
+						</div>
+
+						<div>
+							<label for="description">Description:
+							</label>
+							<textarea name="description" id="description" class="{{ css.inputText }}">{{ selectedMember.description ?? '' }}</textarea>
+						</div>
+
+						<div>
+							<label for="gender">Gender:</label>
+							<select id="gender" name="gender" class="{{ css.inputText }}">
+								<option value="male" {% if selectedMember.gender == 'male' %} selected {% endif %}>Male</option>
+								<option value="female" {% if selectedMember.gender == 'female' %} selected {% endif %}>Female</option>
+							</select>
+						</div>
+
+						<div>
+							<label for="address">Address:</label>
+							<input type="text" id="address" name="address" required class="{{ css.inputText }}" value="{{ selectedMember.address ?? '' }}">
+						</div>
+
+						<div>
+							<label for="position">Position:</label>
+							<input type="text" id="position" name="position" required class="{{ css.inputText }}" value="{{ selectedMember.position ?? '' }}">
+						</div>
+					</div>
+
+					<div class="{{ css.formPopoverBtnContainer }}">
+						<button type="submit" class="{{ css.saveBtn }}">
+							<i class="{{ css.saveIcon }}"></i>
+							Save
+						</button>
+					</div>
+				</form>
+			</div>
 		</div>
 
-		<button type="submit" class="bg-blue-500 text-white p-2 rounded">Save Member</button>
-	</form>
+		<button class="{{ css.formPopoverBtn }}" popovertarget="memberForm" id="formBtn">
+			<i class="{{ css.editIcon }}"></i>
+			Member Form</button>
 
-	<h2 class="text-2xl mt-4">Existing Members</h2>
+		<hr class="{{ css.seperator }}">
 
-	<div class="shadow-sm p-2">
-		<table class="table-auto min-w-full">
-			<thead class="text-left">
-				<tr>
-					<th class="border p-2">Actions</th>
-					<th class="border p-2">Name</th>
-					<th class="border p-2">Gender</th>
-					<th class="border p-2">Address</th>
-					<th class="border p-2">Position</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for member in members %}
-					<tr>
-						<td class="border p-2 w-[70px]">
-							<a href="/admin/members/edit/{{ member.memberId }}" class="bg-blue-500 rounded p-2">E</a>
-							<a href="/admin/members/delete/{{ member.memberId }}" class="bg-red-500 rounded p-2">D</a>
-						</td>
-						<td class="border p-2">
-							{{ member.firstName }}
-							{{ member.lastName }}
-						</td>
-						<td class="border p-2">{{ member.gender }}</td>
-						<td class="border p-2">{{ member.address }}</td>
-						<td class="border p-2">{{ member.position }}</td>
+		<div class="{{ css.tableContainer }}">
+			<table class="{{ css.table }}">
+				<thead class="text-left">
+					<tr class="{{ css.textPrimary }}">
+						<th class="{{ css.tableHeader }}">Actions</th>
+						<th class="{{ css.tableHeader }} min-w-[130px]">Name</th>
+						<th class="{{ css.tableHeader }}">Gender</th>
+						<th class="{{ css.tableHeader }} min-w-[150px]">Address</th>
+						<th class="{{ css.tableHeader }}">Position</th>
+						<th class="{{ css.tableHeader }} min-w-[170px]">Date Created</th>
 					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{% for member in members %}
+						<tr class="{{ css.tableRows }} {{ css.textSecondary }}">
+							<td class="{{ css.tableRowData }}">
+								<div class="{{ css.actionContainer }}">
+									<a href="/admin/members/edit/{{ member.memberId }}" class="{{ css.editBtn }}">
+										<i class="{{ css.editIcon }}"></i>
+										<span>Edit</span>
+									</a>
+									<a href="/admin/members/delete/{{ member.memberId }}" class="{{ css.deleteBtn }}">
+										<i class="{{ css.deleteIcon }}"></i>
+										<span>Delete</span>
+									</a>
+								</div>
+							</td>
+							<td class="{{ css.tableRowData }}">
+								{{ member.firstName }}
+								{{ member.lastName }}
+							</td>
+							<td class="{{ css.tableRowData }}">{{ member.gender }}</td>
+							<td class="{{ css.tableRowData }}">{{ member.address }}</td>
+							<td class="{{ css.tableRowData }}">{{ member.position }}</td>
+							<td class="{{ css.tableRowData }}">{{ member.createdAt }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<script src="/assets/js/members.js"></script>
 	</div>
 {% endblock %}

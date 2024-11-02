@@ -1,25 +1,69 @@
-{% extends 'base.twig' %}
+{% extends '/admin/base.twig' %}
 
-{% block title %}Admin Dashboard{% endblock %}
+{% block title %}Admin Dashboard
+{% endblock %}
 
 {% block content %}
-    <h1 class="text-3xl font-bold">Welcome to the Admin Dashboard</h1>
-    <p>This is the admin area where you can manage ordinances, history, and members.</p>
+	<div class="p-8">
+		<div class="mb-8">
+			<h1 class="{{ css.textPrimary }} text-4xl font-bold mb-3">Dashboard</h1>
+			<p class="{{ css.textSecondary }} text-lg hidden md:block mb-4">
+				This dashboard serves as your central hub for managing key aspects of the Sangguniang Bayan operations. Here, you have the tools to oversee the members, track historical records, and manage local ordinances effectively. With a user-friendly interface, you can quickly navigate through different sections, ensuring that all administrative tasks are handled smoothly.
+			</p>
+			<p class="{{ css.textSecondary }} text-lg">
+				Use the tiles below to access specific areas of management. Each tile provides a direct link to view and edit content related to Sangguniang Bayan members, historical records, and ordinances. Stay informed and keep our community’s governance organized and efficient!
+			</p>
+		</div>
 
-    <h2 class="text-2xl mt-4">Manage Sangguniang Bayan Members</h2>
-    <ul class="list-disc pl-5">
-        <li><a href="/admin/members" class="text-blue-500">View Members</a></li>
-    </ul>
+		<div
+			class="grid md:hidden grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
+			<!-- Tile for Manage Sangguniang Bayan Members -->
+			<a href="/admin/members" class="{{ css.tilesSm }}">
+				<div class="w-full">
+					<i class="{{ css.membersIcon }}"></i>
+				</div>
+				<h2 class="{{ css.tilesTitleSm }}">SB Members</h2>
+			</a>
 
-    <h2 class="text-2xl mt-4">Manage History</h2>
-    <ul class="list-disc pl-5">
-        <li><a href="/admin/history" class="text-blue-500">View History</a></li>
-    </ul>
+			<!-- Tile for Manage History -->
+			<a href="/admin/members" class="{{ css.tilesSm }}">
+				<div class="w-full">
+					<i class="{{ css.historyIcon }}"></i>
+				</div>
+				<h2 class="{{ css.tilesTitleSm }}">History</h2>
+			</a>
 
-    <h2 class="text-2xl mt-4">Manage Ordinances</h2>
-    <ul class="list-disc pl-5 mb-4">
-        <li><a href="/admin/ordinances" class="text-blue-500">View Ordinances</a></li>
-    </ul>
+			<!-- Tile for Manage Ordinances -->
+			<a href="/admin/members" class="{{ css.tilesSm }}">
+				<div class="w-full">
+					<i class="{{ css.ordinanceIcon }}"></i>
+				</div>
+				<h2 class="{{ css.tilesTitleSm }}">Ordinances</h2>
+			</a>
+		</div>
 
-    <a href="/admin/logout" class="text-gray-200 p-2 bg-red-500 rounded">Logout</a>
+		<div
+			class="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+			<!-- Tile for Manage Sangguniang Bayan Members -->
+			<div class="{{ css.tiles }}">
+				<h2 class="{{ css.tilesTitle }}">Manage SB Members</h2>
+				<p class="{{ css.tilesDescription }}">View and manage SB members.</p>
+				<a href="/admin/members" class="{{ css.tilesBtn }}">View Members</a>
+			</div>
+
+			<!-- Tile for Manage History -->
+			<div class="{{ css.tiles }}">
+				<h2 class="{{ css.tilesTitle }}">Manage History</h2>
+				<p class="{{ css.tilesDescription }}">View and manage historical records.</p>
+				<a href="/admin/history" class="{{ css.tilesBtn }}">View History</a>
+			</div>
+
+			<!-- Tile for Manage Ordinances -->
+			<div class="{{ css.tiles }}">
+				<h2 class="{{ css.tilesTitle }}">Manage Ordinances</h2>
+				<p class="{{ css.tilesDescription }}">View and manage ordinances.</p>
+				<a href="/admin/ordinances" class="{{ css.tilesBtn }}">View Ordinances</a>
+			</div>
+		</div>
+	</div>
 {% endblock %}

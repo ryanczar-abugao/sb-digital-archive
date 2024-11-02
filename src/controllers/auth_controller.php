@@ -1,16 +1,19 @@
 <?php
 
-namespace App\Controller;
+namespace Controller;
 
 use PDO;
+use Constants\CssConstants;
 
 class AuthController
 {
     private $pdo;
+    private $cssConstants;
 
     public function __construct($pdo)
     {
         $this->pdo = $pdo;
+        $this->cssConstants = new CssConstants();
     }
 
     public function login()
@@ -34,12 +37,19 @@ class AuthController
                 exit;
             } else {
                 $error = "Invalid username or password.";
-                return ['error' => $error];
+                return [
+                    'error' => $error,
+                    'css' => $this->cssConstants, 
+                    'currentPage' => 'login'
+                ];
             }
         }
         
         // Render login view with error if exists
-        return [];
+        return [
+            'css' => $this->cssConstants, 
+            'currentPage' => 'login'
+        ];
     }
 
     public function logout()

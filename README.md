@@ -20,28 +20,12 @@ Before you begin, ensure that you have the following:
    Use the `cd` command to navigate to the directory where your application files are located. For example:
 
    ```bash
-   cd /path/to/your/sangunian-bayan-digital-archive
+   cd \\xampp\\htdocs\\sb-digital-archive\\public
 
-## TODO: History Management (50% Done)
+#. **Run the App**
 
-1. **Saving Function**
+   Use the `cd` command to navigate to the directory where your application files are located. For example:
 
-   Includes Updating of chapter's contents
-
-## TODO: Ordinances Management (90% Done)
-
-1. **Cleanup and validation of uploading of file**
-
-   Validation of file to accept only pdf file
-
-## TODO: SB Members Management (90% Done)
-
-1. **Cleanup and validation of uploading of file**
-
-   Validation of file to accept only jpg,png, and other valid image file
-
-## TODO: Common (80% Done)
-
-1. **Dashboard**
-
-   Add Security for admin module, for now access is available for all users
+   ```bash
+   php -S localhost:8080
+   

@@ -24,7 +24,7 @@ Before you begin, ensure that you have the following:
 
 3. **Run the App**
 
-   Use the `cd` command to navigate to the directory where your application files are located. For example:
+   Use the `php` command to run the app. For example:
 
    ```bash
    php -S localhost:8080

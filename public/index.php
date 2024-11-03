@@ -96,17 +96,15 @@ switch ($uri) {
         $historyController->showSelectedChapter($matches[1]);
         break;
 
-    case '/admin/history/update':
-        if (preg_match('/\/admin\/history\/update\/(\d+)/', $uri, $matches)) {
-            $chapterId = $matches[1];
-            $historyController->updateChapter($chapterId);
+    case preg_match('/\/admin\/history\/update\/(\d+)/', $uri, $matches) ? true : false:
+        $chapterId = $matches[1];
+        $historyController->updateChapter($chapterId);
 
-            if (isset($_FILES['attachments']) && !empty($_FILES['attachments']['name'][0])) {
-                $attachmentController->handleFileUploads($chapterId, $_FILES['attachments']);
-            }
-
-            $historyController->showSelectedChapter($chapterId);
+        if (isset($_FILES['attachments']) && !empty($_FILES['attachments']['name'][0])) {
+            $attachmentController->handleFileUploads($chapterId, $_FILES['attachments']);
         }
+
+        $historyController->showSelectedChapter($chapterId);
         break;
 
     case preg_match('/\/admin\/history\/delete\/(\d+)/', $uri, $matches) ? true : false:

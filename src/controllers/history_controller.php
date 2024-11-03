@@ -66,15 +66,19 @@ class HistoryController {
             $createdAt = date('Y-m-d H:i:s');
             $contents = $_POST['contents'];
 
-            return $this->chapterModel->createChapter($chapter, $title, $contents, $createdBy, $createdAt);
+            $this->chapterModel->createChapter($chapter, $title, $contents, $createdBy, $createdAt);
+            $chapters = $this->chapterModel->getChapters();
+            echo $this->twig->render('admin/history.twig', [
+                'chapters' => $chapters,
+                'css' => $this->cssConstants,
+                'formAction' => $this->formActions->create(),
+                'isLoggedIn' => isset($_SESSION['userId']), 
+                'currentPage' => 'history'
+            ]);
         }
     }
 
     public function updateChapter($id) {
-        session_start();
-
-        $this->sessionHelper->verifyLoggedUser();
-
         $history = $this->chapterModel->getChapter($id);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $chapter = $_POST['chapter'];

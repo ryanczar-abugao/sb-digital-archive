@@ -23,7 +23,7 @@ class Member {
     }
 
     public function createMember($firstName, $middleName, $lastName, $description, $gender, $address, $position, $profilePicture, $createdBy) {
-        $stmt = $this->pdo->prepare("INSERT INTO sbmembers (firstName, middleName, lastName, description, gender, address, position, profilePicture, createdBy) VALUES (:firstName, :middleName, :lastName, :gender, :address, :position, :profilePicture, :createdBy)");
+        $stmt = $this->pdo->prepare("INSERT INTO sbmembers (firstName, middleName, lastName, description, gender, address, position, profilePicture, createdBy) VALUES (:firstName, :middleName, :lastName, :description, :gender, :address, :position, :profilePicture, :createdBy)");
         return $stmt->execute([
             'firstName' => $firstName,
             'middleName' => $middleName,

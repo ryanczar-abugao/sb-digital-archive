@@ -20,13 +20,21 @@ class AboutController {
 
     public function showAbout() {
         $chapters = $this->chapterModel->getChaptersWithContents();
-        $members = $this->memberModel->getAllMembers();
         
         echo $this->twig->render('about.twig', [
             'chapters' => $chapters, 
-            'members' => $members,
             'css' => $this->cssConstants, 
             'currentPage' => 'about'
+        ]);
+    }
+
+    public function showMembers() {
+        $members = $this->memberModel->getAllMembers();
+        
+        echo $this->twig->render('member.twig', [
+            'members' => $members,
+            'css' => $this->cssConstants, 
+            'currentPage' => 'member'
         ]);
     }
 }

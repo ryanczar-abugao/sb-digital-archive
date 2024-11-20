@@ -5,17 +5,35 @@
 {% endblock %}
 
 {% block content %}
+	<div class="p-8">
+		<h2 class="{{ css.textPrimary }} text-2xl font-bold mb-3">Sanguniang Bayan Members</h2>
 
-	<h2 class="text-2xl mt-4">Sanguniang Bayan Members</h2>
-	<ul>
-		{% for member in members %}
-			<li>
-				{{ member.firstName }}
-				{{ member.lastName }}
-				<a href="/admin/members/{{ member.memberId }}/edit">Edit</a>
-				|
-				<a href="/admin/members/{{ member.memberId }}/delete">Delete</a>
-			</li>
-		{% endfor %}
-	</ul>
-{% endblock %}
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+			{% for member in members %}
+				<div class="{{ css.card }}">
+					<div class="flex gap-2">
+						<img src="{{ member.profilePicture }}" alt="" class="{{ css.cardImage }}">
+						<div>
+							<h3 class="{{ css.cardTitle }}">
+								{{ member.firstName }}
+								{{ member.lastName }}
+							</h3>
+							<h3 class="{{ css.cardSubTitle }}">
+								{{ member.position }}
+							</h3>
+						</div>
+					</div>
+
+					<p class="{{ css.cardDescription }} mb-3">
+						<i class="fas fa-fw fa-location-dot"></i>
+						<span>{{ member.address }}</span>
+					</p>
+
+					<p class="{{ css.cardDescription }}">
+						{{ member.description }}
+					</p>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>{% endblock %}

@@ -42,6 +42,10 @@ switch ($uri) {
     case '/about':
         $aboutController->showAbout();
         break;
+        
+    case '/member':
+        $aboutController->showMembers();
+        break;
 
     case '/admin/login':
         $data = $authController->login();

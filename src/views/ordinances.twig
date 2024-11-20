@@ -6,10 +6,8 @@
 {% block content %}
 	<div class="p-8">
 		<h1 class="{{ css.textPrimary }} text-4xl font-bold mb-3">Ordinances</h1>
-
-		<p class="{{ css.textSecondary }} mb-4 text-lg">
-			Welcome to the Ordinances section, where you can view and manage all legislative documents pertaining to our local governance. Ordinances serve as essential tools for establishing laws, regulations, and guidelines that govern our community. 
-		</p>
+		
+		<hr class="{{ css.separator }}">
 
 		<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 			{% for ordinance in ordinances %}

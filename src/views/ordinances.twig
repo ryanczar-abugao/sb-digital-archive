@@ -5,31 +5,38 @@
 
 {% block content %}
 	<div class="p-8">
-		<h1 class="{{ css.textPrimary }} text-4xl font-bold mb-3">Ordinances</h1>
-		
+		<div class="flex flex-wrap justify-between">
+			<h1 class="{{ css.textPrimary }} text-4xl font-bold mb-3">Ordinances</h1>
+			<form method="GET" action="/ordinances" class="mb-4">
+				<div class="flex">
+					<input type="text" name="search" value="{{ searchQuery|default('') }}" placeholder="Search ordinances..." class="{{ css.inputText }} rounded-none rounded-l-lg min-w-[250px]">
+					<button type="submit" class="mt-1 px-4 py-2 {{ css.bgPrimary }} {{ css.textWhite }} rounded-r-lg">Search</button>
+				</div>
+			</form>
+		</div>
 		<hr class="{{ css.separator }}">
 
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-			{% for ordinance in ordinances %}
-				<div class="{{ css.card }}">
-					<h2 class="{{ css.cardTitle }}">
-						{{ ordinance.title }}
-					</h2>
-					<h3 class="{{ css.cardSubTitle }}">
-						{{ ordinance.authors }}
-					</h3>
-					<p class="{{ css.cardDescription }}">
-						{{ ordinance.description }}
-					</p>
 
-					<div class="{{ css.cardBtnContainer }} mt-4">
-						<a href="/ordinances/preview/{{ ordinance.ordinanceId }}" class="{{ css.cardPrimaryBtn }}">Preview</a>
-						<a href="/ordinances/download/{{ ordinance.ordinanceId }}" class="{{ css.cardSecondaryBtn }}">
-							<i class="{{ css.downloadIcon }}"></i>
-						</a>
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+			{% if ordinances is empty %}
+				<p class="text-gray-500">No ordinances found.</p>
+			{% else %}
+				{% for ordinance in ordinances %}
+					<div class="{{ css.card }}">
+						<h2 class="{{ css.cardTitle }}">{{ ordinance.title }}</h2>
+						<h3 class="{{ css.cardSubTitle }}">{{ ordinance.authors }}</h3>
+						<div class="{{ css.cardDescription }} ordinance-description">
+							<span class="ordinance-description-text">{{ ordinance.description }}</span>
+						</div>
+						<div class="{{ css.cardBtnContainer }} mt-4">
+							<a href="/ordinances/preview/{{ ordinance.ordinanceId }}" class="{{ css.cardPrimaryBtn }}">Preview</a>
+							<a href="/ordinances/download/{{ ordinance.ordinanceId }}" class="{{ css.cardSecondaryBtn }}">
+								<i class="{{ css.downloadIcon }}"></i>
+							</a>
+						</div>
 					</div>
-				</div>
-			{% endfor %}
+				{% endfor %}
+			{% endif %}
 		</div>
 	</div>
 {% endblock %}

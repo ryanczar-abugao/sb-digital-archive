@@ -30,9 +30,18 @@ class AboutController {
 
     public function showMembers() {
         $members = $this->memberModel->getAllMembers();
+
+        $groupedMembers = [];
+        foreach ($members as $member) {
+            $term = $member['term'];
+            if (!isset($groupedMembers[$term])) {
+                $groupedMembers[$term] = [];
+            }
+            $groupedMembers[$term][] = $member;
+        }
         
         echo $this->twig->render('member.twig', [
-            'members' => $members,
+            'groupedMembers' => $groupedMembers,
             'css' => $this->cssConstants, 
             'currentPage' => 'member'
         ]);

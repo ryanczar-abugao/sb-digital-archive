@@ -29,26 +29,33 @@ class OrdinanceController
 
     public function showOrdinances($isAdmin)
     {
-        $ordinances = $this->ordinanceModel->getAllOrdinances();
+        $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : null;
+
+        if ($searchQuery) 
+        {
+            $ordinances = $this->ordinanceModel->searchOrdinances($searchQuery);
+        } 
+        else 
+        {
+            $ordinances = $this->ordinanceModel->getAllOrdinances();
+        }
+
+        $template = $isAdmin ? 'admin/ordinances.twig' : 'ordinances.twig';
+        $context = [
+            'ordinances' => $ordinances,
+            'css' => $this->cssConstants,
+            'currentPage' => 'ordinances',
+            'searchQuery' => $searchQuery, // Pass search query to pre-fill the search box
+        ];
+
         if ($isAdmin) {
             session_start();
-
             $this->sessionHelper->verifyLoggedUser();
-
-            echo $this->twig->render('admin/ordinances.twig', [
-                'ordinances' => $ordinances,
-                'formAction' => $this->defaultFormAction,
-                'css' => $this->cssConstants,
-                'isLoggedIn' => isset($_SESSION['userId']), 
-                'currentPage' => 'ordinances'
-            ]);
-        } else {
-            echo $this->twig->render('ordinances.twig', [
-                'ordinances' => $ordinances,
-                'css' => $this->cssConstants, 
-                'currentPage' => 'ordinances'
-            ]);
+            $context['formAction'] = $this->defaultFormAction;
+            $context['isLoggedIn'] = isset($_SESSION['userId']);
         }
+
+        echo $this->twig->render($template, $context);
     }
 
     public function showSelectedOrdinance($isAdmin, $id)
@@ -65,13 +72,13 @@ class OrdinanceController
                 'selectedOrdinance' => $selectedOrdinance,
                 'formAction' => "/admin/ordinances/update/$id",
                 'css' => $this->cssConstants,
-                'isLoggedIn' => isset($_SESSION['userId']), 
+                'isLoggedIn' => isset($_SESSION['userId']),
                 'currentPage' => 'ordinances'
             ]);
         } else {
             echo $this->twig->render('ordinances.twig', [
                 'ordinances' => $ordinances,
-                'css' => $this->cssConstants, 
+                'css' => $this->cssConstants,
                 'currentPage' => 'ordinances'
             ]);
         }
@@ -86,20 +93,21 @@ class OrdinanceController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = $_POST['title'];
             $authors = $_POST['authors'];
+            $year = $_POST['year'];
             $description = $_POST['description'];
             $createdBy = $_SESSION['userId'];
 
-            if (!empty($_FILES['ordinanceFile']['name'])) {
+            if (!empty($_FILES['fileInput']['name'])) {
                 $targetDir = "/uploads/";
-                $fileExtension = pathinfo($_FILES['ordinanceFile']['name'], PATHINFO_EXTENSION); // Get the file extension
+                $fileExtension = pathinfo($_FILES['fileInput']['name'], PATHINFO_EXTENSION); // Get the file extension
                 $uniqueFileName = uniqid($this->fileBaseName, true) . '.' . $fileExtension;
                 $targetPath = $targetDir . $uniqueFileName;
                 $fullPath = $this->baseDir . $targetDir . $uniqueFileName;
-                move_uploaded_file($_FILES['ordinanceFile']['tmp_name'], $fullPath);
-                $ordinanceFile = $fullPath;
+                move_uploaded_file($_FILES['fileInput']['tmp_name'], $fullPath);
+                $fileInput = $fullPath;
             }
 
-            $this->ordinanceModel->createOrdinance($ordinanceFile, $title, $authors, $description, $createdBy);
+            $this->ordinanceModel->createOrdinance($fileInput, $title, $authors, $year, $description, $createdBy);
             header('Location: /admin/ordinances');
             exit;
         }
@@ -109,7 +117,7 @@ class OrdinanceController
             'ordinances' => $ordinances,
             'formAction' => $this->defaultFormAction,
             'css' => $this->cssConstants,
-            'isLoggedIn' => isset($_SESSION['userId']), 
+            'isLoggedIn' => isset($_SESSION['userId']),
             'currentPage' => 'ordinances'
         ]);
     }
@@ -120,23 +128,26 @@ class OrdinanceController
 
         $this->sessionHelper->verifyLoggedUser();
 
+        $selectedOrdinance = $this->ordinanceModel->getOrdinance($id);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = $_POST['title'];
             $authors = $_POST['authors'];
+            $year = $_POST['year'];
             $description = $_POST['description'];
             $updatedBy = $_SESSION['userId'];
 
-            if (!empty($_FILES['ordinanceFile']['name'])) {
+            $fileInput = $selectedOrdinance['fileInput'];
+            if (!empty($_FILES['fileInput']['name'])) {
                 $targetDir = "/uploads/";
-                $fileExtension = pathinfo($_FILES['ordinanceFile']['name'], PATHINFO_EXTENSION); // Get the file extension
+                $fileExtension = pathinfo($_FILES['fileInput']['name'], PATHINFO_EXTENSION); // Get the file extension
                 $uniqueFileName = uniqid($this->fileBaseName, true) . '.' . $fileExtension;
                 $targetPath = $targetDir . $uniqueFileName;
                 $fullPath = $this->baseDir . $targetDir . $uniqueFileName;
-                move_uploaded_file($_FILES['ordinanceFile']['tmp_name'], $fullPath);
-                $ordinanceFile = $fullPath;
+                move_uploaded_file($_FILES['fileInput']['tmp_name'], $fullPath);
+                $fileInput = $fullPath;
             }
 
-            $this->ordinanceModel->updateOrdinance($id, $ordinanceFile, $title, $authors, $description, $updatedBy);
+            $this->ordinanceModel->updateOrdinance($id, $fileInput, $title, $authors, $year, $description, $updatedBy);
             header('Location: /admin/ordinances');
             exit;
         }
@@ -146,28 +157,28 @@ class OrdinanceController
             'ordinances' => $ordinances,
             'formAction' => $this->defaultFormAction,
             'css' => $this->cssConstants,
-            'isLoggedIn' => isset($_SESSION['userId']), 
+            'isLoggedIn' => isset($_SESSION['userId']),
             'currentPage' => 'ordinances'
         ]);
     }
 
-    public function readOrdinanceFile($id, $contentDisposition) 
+    public function readOrdinanceFile($id, $contentDisposition)
     {
         $ordinance = $this->ordinanceModel->getOrdinance($id);
 
-        if (file_exists($ordinance['ordinanceFile'])) {
+        if (file_exists($ordinance['fileInput'])) {
             header('Content-Description: File Transfer');
             header('Content-Type: application/pdf');
-            header("Content-Disposition: {$contentDisposition}; filename=" . basename($ordinance['ordinanceFile']));
+            header("Content-Disposition: {$contentDisposition}; filename=" . basename($ordinance['fileInput']));
             header('Expires: 0');
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
-            header('Content-Length: ' . filesize($ordinance['ordinanceFile']));
+            header('Content-Length: ' . filesize($ordinance['fileInput']));
 
             ob_clean();
             flush();
 
-            readfile($ordinance['ordinanceFile']);
+            readfile($ordinance['fileInput']);
 
             exit;
         } else {
@@ -181,7 +192,7 @@ class OrdinanceController
     public function deleteOrdinance($id)
     {
         session_start();
-        
+
         $this->sessionHelper->verifyLoggedUser();
 
         $this->ordinanceModel->deleteOrdinance($id);

@@ -202,7 +202,7 @@ class CssConstants
 
     // Card styles
         $this->card = "{$this->bgWhite} border border-{$this->colorPrimary} shadow-md rounded p-4 py-6";
-        $this->cardImage = "bg-contain w-[40px] md:w-[50px] h-[40px] md:h-[50px] rounded";
+        $this->cardImage = "bg-contain w-[40px] md:w-[50px] h-[40px] md:h-[50px] rounded hover:shadow hover:shadow-indigo-500/80";
         $this->cardTitle = "{$this->textPrimary} font-bold";
         $this->cardSubTitle = "{$this->textSecondary} mb-3";
         $this->cardDescription = "{$this->textSecondary}";
@@ -233,7 +233,7 @@ class CssConstants
     // Table styles
         $this->tableContainer = "overflow-x-auto shadow my-3";
         $this->table = "min-w-full bg-white border border-gray-200 rounded-lg shadow-md table-fixed text-sm md:text-base";
-        $this->tableHeader = "border-b border-gray-300 p-3 text-left";
+        $this->tableHeader = "{$this->textSecondary} border-b border-gray-300 p-3 text-left";
         $this->tableRows = "hover:bg-gray-100 transition duration-300 ease-in-out";
         $this->tableRowData = "border-b border-gray-300 p-3";
 

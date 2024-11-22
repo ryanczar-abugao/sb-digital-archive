@@ -28,8 +28,8 @@
 					<input type="hidden" name="memberId" value="{{ selectedMember.memberId ?? '' }}">
 
 					<div class="flex flex-col items-start mb-3">
-						<input type="file" id="profilePicture" name="profilePicture" class="hidden">
-						<label for="profilePicture" class="{{ css.inputFileImage }}">
+						<input type="file" id="fileInput" name="fileInput" class="hidden">
+						<label for="fileInput" class="{{ css.inputFileImage }}">
 							<i class="{{ css.imageIcon }}"></i>
 							Upload Profile Picture
 						</label>
@@ -49,6 +49,17 @@
 							<div>
 								<label for="lastName">Last Name:</label>
 								<input type="text" id="lastName" name="lastName" required class="{{ css.inputText }}" value="{{ selectedMember.lastName ?? '' }}">
+							</div>
+						</div>
+
+						<div class="grid grid-cols-subgrid grid-cols-1 md:grid-cols-2 gap-3">
+							<div>
+								<label for="termStart">Term Start:</label>
+								<input type="date" id="termStart" name="termStart" required class="{{ css.inputText }}" value="{{ selectedMember.termStart ?? '' }}">
+							</div>
+							<div>
+								<label for="termEnd">Term End:</label>
+								<input type="date" id="termEnd" name="termEnd" class="{{ css.inputText }}" value="{{ selectedMember.termEnd ?? '' }}">
 							</div>
 						</div>
 
@@ -93,47 +104,53 @@
 
 		<hr class="{{ css.seperator }}">
 
-		<div class="{{ css.tableContainer }}">
-			<table class="{{ css.table }}">
-				<thead class="text-left">
-					<tr class="{{ css.textPrimary }}">
-						<th class="{{ css.tableHeader }}">Actions</th>
-						<th class="{{ css.tableHeader }} min-w-[130px]">Name</th>
-						<th class="{{ css.tableHeader }}">Gender</th>
-						<th class="{{ css.tableHeader }} min-w-[150px]">Address</th>
-						<th class="{{ css.tableHeader }}">Position</th>
-						<th class="{{ css.tableHeader }} min-w-[170px]">Date Created</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for member in members %}
-						<tr class="{{ css.tableRows }} {{ css.textSecondary }}">
-							<td class="{{ css.tableRowData }}">
-								<div class="{{ css.actionContainer }}">
-									<a href="/admin/members/edit/{{ member.memberId }}" class="{{ css.editBtn }}">
-										<i class="{{ css.editIcon }}"></i>
-										<span>Edit</span>
-									</a>
-									<a href="/admin/members/delete/{{ member.memberId }}" class="{{ css.deleteBtn }}">
-										<i class="{{ css.deleteIcon }}"></i>
-										<span>Delete</span>
-									</a>
-								</div>
-							</td>
-							<td class="{{ css.tableRowData }}">
-								{{ member.firstName }}
-								{{ member.lastName }}
-							</td>
-							<td class="{{ css.tableRowData }}">{{ member.gender }}</td>
-							<td class="{{ css.tableRowData }}">{{ member.address }}</td>
-							<td class="{{ css.tableRowData }}">{{ member.position }}</td>
-							<td class="{{ css.tableRowData }}">{{ member.createdAt }}</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
+		{% for term, members in groupedMembers %}
+			<div class="my-3 mb-8">
+				<h2 class="text-lg {{ css.textSecondary }} px-3">Term: {{ term }}</h2>
+				<div class="{{ css.tableContainer }}">
+					<table class="{{ css.table }}">
+						<thead class="text-left">
+							<tr class="{{ css.textPrimary }}">
+								<th class="{{ css.tableHeader }}">Actions</th>
+								<th class="{{ css.tableHeader }} min-w-[130px]">Name</th>
+								<th class="{{ css.tableHeader }}">Gender</th>
+								<th class="{{ css.tableHeader }} min-w-[150px]">Address</th>
+								<th class="{{ css.tableHeader }}">Position</th>
+								<th class="{{ css.tableHeader }} min-w-[170px]">Date Created</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for member in members %}
+								<tr class="{{ css.tableRows }} {{ css.textSecondary }}">
+									<td class="{{ css.tableRowData }}">
+										<div class="{{ css.actionContainer }}">
+											<a href="/admin/members/edit/{{ member.memberId }}" class="{{ css.editBtn }}">
+												<i class="{{ css.editIcon }}"></i>
+												<span>Edit</span>
+											</a>
+											<a href="/admin/members/delete/{{ member.memberId }}" class="{{ css.deleteBtn }}">
+												<i class="{{ css.deleteIcon }}"></i>
+												<span>Delete</span>
+											</a>
+										</div>
+									</td>
+									<td class="{{ css.tableRowData }}">
+										{{ member.firstName }}
+										{{ member.lastName }}
+									</td>
+									<td class="{{ css.tableRowData }}">{{ member.gender }}</td>
+									<td class="{{ css.tableRowData }}">{{ member.address }}</td>
+									<td class="{{ css.tableRowData }}">{{ member.position }}</td>
+									<td class="{{ css.tableRowData }}">{{ member.createdAt }}</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<hr class="{{ css.seperator }}">
+		{% endfor %}
 
-		<script src="/assets/js/members.js"></script>
+		<script src="/assets/js/fileHandler.js"></script>
 	</div>
 {% endblock %}

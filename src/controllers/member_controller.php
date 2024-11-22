@@ -30,8 +30,18 @@ class MemberController{
         $this->sessionHelper->verifyLoggedUser();
 
         $members = $this->memberModel->getAllMembers();
+
+        $groupedMembers = [];
+        foreach ($members as $member) {
+            $term = $member['term'];
+            if (!isset($groupedMembers[$term])) {
+                $groupedMembers[$term] = [];
+            }
+            $groupedMembers[$term][] = $member;
+        }
+
         echo $this->twig->render('admin/members.twig', [
-            'members' => $members, 
+            'groupedMembers' => $groupedMembers, 
             'formAction' => $this->defaultFormAcion,
             'css' => $this->cssConstants,
             'isLoggedIn' => isset($_SESSION['userId']), 
@@ -46,8 +56,18 @@ class MemberController{
 
         $members = $this->memberModel->getAllMembers();
         $member = $this->memberModel->getMember($id);
+
+        $groupedMembers = [];
+        foreach ($members as $member) {
+            $term = $member['term'];
+            if (!isset($groupedMembers[$term])) {
+                $groupedMembers[$term] = [];
+            }
+            $groupedMembers[$term][] = $member;
+        }
+
         echo $this->twig->render('admin/members.twig', [
-            'members' => $members, 
+            'groupedMembers' => $groupedMembers, 
             'selectedMember' => $member,
             'formAction' => "/admin/members/update/$id",
             'css' => $this->cssConstants,
@@ -70,22 +90,24 @@ class MemberController{
             $gender = $_POST['gender'];
             $address = $_POST['address'];
             $position = $_POST['position'];
-            $createdBy = $_SESSION['userId']; // Assuming user ID from session
+            $createdBy = $_SESSION['userId']; 
+            $termStart = $_POST['termStart']; 
+            $termEnd = $_POST['termEnd']; 
 
             // Handle file upload
-            $profilePicture = '';
-            if (!empty($_FILES['profilePicture']['name'])) {
+            $fileInput = '';
+            if (!empty($_FILES['fileInput']['name'])) {
                 $targetDir = "/uploads/";
-                $fileExtension = pathinfo($_FILES['profilePicture']['name'], PATHINFO_EXTENSION); // Get the file extension
+                $fileExtension = pathinfo($_FILES['fileInput']['name'], PATHINFO_EXTENSION); // Get the file extension
                 $uniqueFileName = uniqid($this->fileBaseName, true) . '.' . $fileExtension;
                 $targetPath = $targetDir . $uniqueFileName;
                 $fullPath = $this->baseDir . $targetDir . $uniqueFileName;
-                move_uploaded_file($_FILES['profilePicture']['tmp_name'], $fullPath);
-                $profilePicture = $targetPath;
+                move_uploaded_file($_FILES['fileInput']['tmp_name'], $fullPath);
+                $fileInput = $targetPath;
             }
 
             // Insert into database
-            $this->memberModel->createMember($firstName, $middleName, $lastName, $description, $gender, $address, $position, $profilePicture, $createdBy);
+            $this->memberModel->createMember($firstName, $middleName, $lastName, $description, $gender, $address, $position, $fileInput, $createdBy, $termStart, $termEnd);
 
             header("Location: /admin/members");
             exit;
@@ -116,22 +138,24 @@ class MemberController{
             $gender = $_POST['gender'];
             $address = $_POST['address'];
             $position = $_POST['position'];
-            $updatedBy = $_SESSION['userId']; // Assuming user ID from session
+            $updatedBy = $_SESSION['userId']; 
+            $termStart = $_POST['termStart']; 
+            $termEnd = $_POST['termEnd']; 
 
             // Handle file upload
-            $profilePicture = $selectedMember['profilePicture']; // Default to existing picture
-            if (!empty($_FILES['profilePicture']['name'])) {
+            $fileInput = $selectedMember['fileInput']; // Default to existing picture
+            if (!empty($_FILES['fileInput']['name'])) {
                 $targetDir = "/uploads/";
-                $fileExtension = pathinfo($_FILES['profilePicture']['name'], PATHINFO_EXTENSION); // Get the file extension
+                $fileExtension = pathinfo($_FILES['fileInput']['name'], PATHINFO_EXTENSION); // Get the file extension
                 $uniqueFileName = uniqid($this->fileBaseName, true) . '.' . $fileExtension;
                 $targetPath = $targetDir . $uniqueFileName;
                 $fullPath = $this->baseDir . $targetDir . $uniqueFileName;
-                move_uploaded_file($_FILES['profilePicture']['tmp_name'], $fullPath);
-                $profilePicture = $targetPath;
+                move_uploaded_file($_FILES['fileInput']['tmp_name'], $fullPath);
+                $fileInput = $targetPath;
             }
             
 
-            $this->memberModel->updateMember($id, $firstName, $middleName, $lastName, $description, $gender, $address, $position, $profilePicture, $updatedBy);
+            $this->memberModel->updateMember($id, $firstName, $middleName, $lastName, $description, $gender, $address, $position, $fileInput, $updatedBy, $termStart, $termEnd);
             header("Location: /admin/members/edit/$id");
             exit;
         }

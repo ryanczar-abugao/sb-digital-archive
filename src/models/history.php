@@ -4,7 +4,7 @@ namespace Model;
 
 use PDO;
 
-class Chapter
+class History
 {
     private $pdo;
 
@@ -15,28 +15,28 @@ class Chapter
 
     public function getChapters()
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM chapters");
+        $stmt = $this->pdo->prepare("SELECT * FROM histories");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getChaptersWithContents()
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM chapters");
+        $stmt = $this->pdo->prepare("SELECT * FROM histories");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getChapter($id)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM chapters WHERE chapterId = :id");
+        $stmt = $this->pdo->prepare("SELECT * FROM histories WHERE historyId = :id");
         $stmt->execute(['id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function createChapter($chapter, $title, $contents, $createdBy, $createdAt)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO chapters (chapter, title, contents, createdBy, createdAt) VALUES (:chapter, :title, :contents, :createdBy, :createdAt)");
+        $stmt = $this->pdo->prepare("INSERT INTO histories (chapter, title, contents, createdBy, createdAt) VALUES (:chapter, :title, :contents, :createdBy, :createdAt)");
 
         return $stmt->execute([
             'chapter' => $chapter,
@@ -49,7 +49,7 @@ class Chapter
 
     public function updateChapter($id, $chapter, $title, $contents, $updatedBy)
     {
-        $stmt = $this->pdo->prepare("UPDATE chapters SET chapter = :chapter, title = :title, contents = :contents, updatedBy = :updatedBy WHERE chapterId = :id");
+        $stmt = $this->pdo->prepare("UPDATE histories SET chapter = :chapter, title = :title, contents = :contents, updatedBy = :updatedBy WHERE historyId = :id");
         return $stmt->execute([
             'id' => $id,
             'chapter' => $chapter,
@@ -61,7 +61,7 @@ class Chapter
 
     public function deleteChapter($id)
     {
-        $stmt = $this->pdo->prepare("DELETE FROM chapters WHERE chapterId = :id");
+        $stmt = $this->pdo->prepare("DELETE FROM histories WHERE historyId = :id");
         return $stmt->execute(['id' => $id]);
     }
 }

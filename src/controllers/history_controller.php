@@ -1,13 +1,13 @@
 <?php
 namespace Controller;
 
-use Model\Chapter;
+use Model\History;
 use Constants\CssConstants;
 use Form\FormActions;
 use Helpers\SessionHelpers;
 
 class HistoryController {
-    private $chapterModel;
+    private $historyModel;
     private $twig;
     private $cssConstants;
     private $formActions;
@@ -15,7 +15,7 @@ class HistoryController {
 
 
     public function __construct($pdo, $twig) {
-        $this->chapterModel = new Chapter($pdo);
+        $this->historyModel = new History($pdo);
         $this->cssConstants = new CssConstants();
         $this->sessionHelper = new SessionHelpers();
         $this->twig = $twig;
@@ -27,7 +27,7 @@ class HistoryController {
         
         $this->sessionHelper->verifyLoggedUser();
 
-        $chapters = $this->chapterModel->getChapters();
+        $chapters = $this->historyModel->getChapters();
         echo $this->twig->render('admin/history.twig', [
             'chapters' => $chapters,
             'css' => $this->cssConstants,
@@ -42,8 +42,8 @@ class HistoryController {
 
         $this->sessionHelper->verifyLoggedUser();
 
-        $chapters = $this->chapterModel->getChapters();
-        $selectedChapter = $this->chapterModel->getChapter($id);
+        $chapters = $this->historyModel->getChapters();
+        $selectedChapter = $this->historyModel->getChapter($id);
         echo $this->twig->render('admin/history.twig', [
             'chapters' => $chapters,
             'selectedChapter' => $selectedChapter,
@@ -66,8 +66,8 @@ class HistoryController {
             $createdAt = date('Y-m-d H:i:s');
             $contents = $_POST['contents'];
 
-            $this->chapterModel->createChapter($chapter, $title, $contents, $createdBy, $createdAt);
-            $chapters = $this->chapterModel->getChapters();
+            $this->historyModel->createChapter($chapter, $title, $contents, $createdBy, $createdAt);
+            $chapters = $this->historyModel->getChapters();
             echo $this->twig->render('admin/history.twig', [
                 'chapters' => $chapters,
                 'css' => $this->cssConstants,
@@ -79,13 +79,13 @@ class HistoryController {
     }
 
     public function updateChapter($id) {
-        $history = $this->chapterModel->getChapter($id);
+        $history = $this->historyModel->getChapter($id);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $chapter = $_POST['chapter'];
             $title = $_POST['title'];
             $contents = $_POST['contents'];
             $updatedBy = isset($_SESSION['userId']) ? $_SESSION['userId'] : 1;
-            return $this->chapterModel->updateChapter($id, $chapter, $title, $contents, $updatedBy);
+            return $this->historyModel->updateChapter($id, $chapter, $title, $contents, $updatedBy);
         }
     }
 
@@ -94,7 +94,7 @@ class HistoryController {
 
         $this->sessionHelper->verifyLoggedUser();
 
-        $this->chapterModel->deleteChapter($id);
+        $this->historyModel->deleteChapter($id);
         header('Location: /admin/history');
         exit;
     }

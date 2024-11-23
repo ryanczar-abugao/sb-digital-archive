@@ -20,7 +20,7 @@
 
 			<div class="px-8 py-4">
 				<form action="{{ formAction }}" method="POST" enctype="multipart/form-data">
-					<input type="hidden" name="historyId" value="{{ selectedChapter.chapterId ?? '' }}">
+					<input type="hidden" name="historyId" value="{{ selectedChapter.historyId ?? '' }}">
 
 					<div class="grid grid-cols-1 gap-3">
 						<div>
@@ -74,11 +74,11 @@
 						<tr class="{{ css.tableRows }} {{ css.textSecondary }}">
 							<td class="{{ css.tableRowData }}">
 								<div class="{{ css.actionContainer }}">
-									<a href="/admin/history/edit/{{ chapter.chapterId }}" class="{{ css.editBtn }}">
+									<a href="/admin/history/edit/{{ chapter.historyId }}" class="{{ css.editBtn }}">
 										<i class="{{ css.editIcon }}"></i>
 										<span>Edit</span>
 									</a>
-									<a href="/admin/history/delete/{{ chapter.chapterId }}" class="{{ css.deleteBtn }}">
+									<a href="/admin/history/delete/{{ chapter.historyId }}" class="{{ css.deleteBtn }}">
 										<i class="{{ css.deleteIcon }}"></i>
 										<span>Delete</span>
 									</a>

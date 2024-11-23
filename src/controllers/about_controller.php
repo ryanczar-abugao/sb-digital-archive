@@ -2,24 +2,24 @@
 namespace Controller;
 
 use Model\Member;
-use Model\Chapter;
+use Model\History;
 use Constants\CssConstants;
 
 class AboutController {
-    private $chapterModel;
+    private $historyModel;
     private $memberModel;
     private $twig;
     private $cssConstants;
 
     public function __construct($pdo, $twig) {
         $this->cssConstants = new CssConstants();
-        $this->chapterModel = new Chapter($pdo);
+        $this->historyModel = new History($pdo);
         $this->memberModel = new Member($pdo);
         $this->twig = $twig;
     }
 
     public function showAbout() {
-        $chapters = $this->chapterModel->getChaptersWithContents();
+        $chapters = $this->historyModel->getChaptersWithContents();
         
         echo $this->twig->render('about.twig', [
             'chapters' => $chapters, 

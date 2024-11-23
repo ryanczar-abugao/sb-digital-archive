@@ -64,8 +64,8 @@ CREATE TABLE ordinances (
 );
 
 
-CREATE TABLE chapters (
-    chapterId INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE histories (
+    historyId INT AUTO_INCREMENT PRIMARY KEY,
     chapter VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
     contents TEXT NOT NULL,
@@ -79,10 +79,10 @@ CREATE TABLE chapters (
 
 CREATE TABLE attachments (.
     attachmentId INT AUTO_INCREMENT PRIMARY KEY,
-    chapterId INT,
+    historyId INT,
     ordinanceId INT,
     url VARCHAR(255) NOT NULL,
-    FOREIGN KEY (chapterId) REFERENCES chapters(chapterId) ON DELETE CASCADE,
+    FOREIGN KEY (historyId) REFERENCES histories(historyId) ON DELETE CASCADE,
     FOREIGN KEY (ordinanceId) REFERENCES ordinances(ordinanceId) ON DELETE CASCADE
 );
 
@@ -100,7 +100,7 @@ INSERT INTO `sbmembers` (`memberId`, `firstName`, `middleName`, `lastName`, `des
 (5, 'Rey', 'J', 'Johnson', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum saepe, veniam est nemo odit doloremque necessitatibus quos modi eum asperiores.', 'male', '456 Oak St, Cityville', 'Treasurer', '/uploads/member_67402d2e26f046.65157700.png', '2029-11-22', '2040-11-22', NOW(), 'Admin', '1', '2024-11-22 07:05:18', 1),
 (6, 'Mar', 'M', 'Brown', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum saepe, veniam est nemo odit doloremque necessitatibus quos modi eum asperiores.', 'female', '789 Pine St, Cityville', 'Member', '/uploads/member_67402d37d53d23.99522681.png', '2029-11-22', '2040-11-22', NOW(), 'Admin', '1', '2024-11-22 07:05:27', 1);
 
-INSERT INTO chapters (chapter, title, contents, createdBy, createdAt, userId)
+INSERT INTO histories (chapter, title, contents, createdBy, createdAt, userId)
 VALUES
 ('Chapter 1', 'The Founding of Cityville', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum saepe, veniam est nemo odit doloremque necessitatibus quos modi eum asperiores.', 'Jane Mary', NOW(), 3),
 ('Chapter 2', 'Expansion of Cityville', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum saepe, veniam est nemo odit doloremque necessitatibus quos modi eum asperiores.', 'Admin', NOW(), 1);

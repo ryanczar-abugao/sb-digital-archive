@@ -55,11 +55,11 @@
 						<div class="grid grid-cols-subgrid grid-cols-1 md:grid-cols-2 gap-3">
 							<div>
 								<label for="termStart">Term Start:</label>
-								<input type="date" id="termStart" name="termStart" required class="{{ css.inputText }}" value="{{ selectedMember.termStart ?? '' }}">
+								<input type="date" id="termStart" name="termStart" required class="{{ css.inputText }}" value="{{ selectedMember.termStart|default('')|date('Y-m-d') }}">
 							</div>
 							<div>
 								<label for="termEnd">Term End:</label>
-								<input type="date" id="termEnd" name="termEnd" class="{{ css.inputText }}" value="{{ selectedMember.termEnd ?? '' }}">
+								<input type="date" id="termEnd" name="termEnd" class="{{ css.inputText }}" value="{{ selectedMember.termEnd|default('')|date('Y-m-d') }}">
 							</div>
 						</div>
 

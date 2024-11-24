@@ -1,12 +1,12 @@
 {% extends 'base.twig' %}
 
 {% block title %}
-    Manage Members
+    Members
 {% endblock %}
 
 {% block content %}
     <div class="p-8">
-        <h2 class="{{ css.textPrimary }} text-2xl font-bold mb-3">Sangguniang Bayan Members</h2>
+        <h2 class="{{ css.textPrimary }} text-2xl font-bold mb-3">Sangguniang Bayan Municipal Officials</h2>
 
         <div class="grid grid-cols-1 gap-6 mb-6">
             {% for term, members in groupedMembers %}

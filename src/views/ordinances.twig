@@ -16,7 +16,6 @@
 		</div>
 		<hr class="{{ css.separator }}">
 
-
 		<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 			{% if ordinances is empty %}
 				<p class="text-gray-500">No ordinances found.</p>
@@ -27,6 +26,9 @@
 						<h3 class="{{ css.cardSubTitle }}">{{ ordinance.authors }}</h3>
 						<div class="{{ css.cardDescription }} ordinance-description">
 							<span class="ordinance-description-text">{{ ordinance.description }}</span>
+							{% if ordinance.description|length > 100 %}
+								<button class="text-blue-500 toggle-description-btn" onclick="toggleDescription(event)">See more</button>
+							{% endif %}
 						</div>
 						<div class="{{ css.cardBtnContainer }} mt-4">
 							<a href="/ordinances/preview/{{ ordinance.ordinanceId }}" class="{{ css.cardPrimaryBtn }}">Preview</a>
@@ -39,4 +41,6 @@
 			{% endif %}
 		</div>
 	</div>
+
+	<script src="/assets/js/ordinances.js"></script>
 {% endblock %}

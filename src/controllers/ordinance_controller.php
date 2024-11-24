@@ -31,7 +31,7 @@ class OrdinanceController
     {
         $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : null;
 
-        if ($searchQuery) 
+        if ($searchQuery)
         {
             $ordinances = $this->ordinanceModel->searchOrdinances($searchQuery);
         } 

@@ -9,12 +9,23 @@
 		<link rel="icon" href="/assets/uploads/SBLogo.ico"/>
 		<link rel="stylesheet" href="/assets/css/app.css"/>
 		<script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+		<script src="https://unpkg.com/tailwindcss-cdn@3.4.10/tailwindcss.js"></script>
+		<script src="https://unpkg.com/tailwindcss-cdn@3.4.10/tailwindcss-with-all-plugins.js"></script>
 		<title>
 			{% block title %}Sanggunian Bayan Digital Archive
 			{% endblock %}
 		</title>
 	</head>
-	<body class="{{ css.bg }} text-sm md:text-base">
+	<body
+		class="{{ css.bg }} text-sm md:text-base">
+		<!-- Splash Screen -->
+		<div id="splash-screen" class="fixed inset-0 bg-gray-100 flex items-center justify-center z-50">
+			<div class="text-center">
+				<img src="/assets/uploads/SBLogo.png" alt="SB Logo" class="w-60 h-60 animate-spin-slow">
+				<p class="text-lg font-semibold text-gray-700 mt-4">Loading... Please Wait</p>
+			</div>
+		</div>
+
 		<header class="{{ css.header }}">
 			<div class="grid grid-cols-12 items-center">
 				<div class="flex items-center col-span-2 md:col-span-3">
@@ -42,7 +53,6 @@
 				</div>
 			</footer>
 
-			<script src="https://unpkg.com/tailwindcss-cdn@3.4.10/tailwindcss.js"></script>
-			<script src="https://unpkg.com/tailwindcss-cdn@3.4.10/tailwindcss-with-all-plugins.js"></script>
+			<script src="/assets/js/app.js"></script>
 		</body>
 	</html>

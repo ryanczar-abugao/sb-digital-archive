@@ -1,7 +1,7 @@
 // Add CSS to make truncated descriptions work well
 document.addEventListener("DOMContentLoaded", () => {
   const descriptions = document.querySelectorAll('.member-description-text');
-  const textMaxLength = 200;
+  const textMaxLength = 100;
   
   // Debugging: Log the descriptions to check if they are being rendered
   descriptions.forEach(desc => {

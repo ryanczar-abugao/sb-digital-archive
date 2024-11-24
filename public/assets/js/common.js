@@ -10,3 +10,4 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#formBtn').click();
   }
 });
+

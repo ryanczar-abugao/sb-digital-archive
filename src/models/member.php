@@ -15,7 +15,7 @@ class Member
 
     public function getAllMembers()
     {
-        $stmt = $this->pdo->prepare("SELECT *, CONCAT(termStart, ' - ', termEnd) AS term FROM sbmembers ORDER BY termStart, termEnd");
+        $stmt = $this->pdo->prepare("SELECT *, CONCAT(termStart, ' - ', termEnd) AS term FROM sbmembers ORDER BY term DESC");
         $stmt->execute();
         $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

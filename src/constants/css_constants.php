@@ -76,7 +76,7 @@ class CssConstants
     public string $ordinanceIcon;
 
 // Background images
-    public string $sbOfficeBg = "background-image: url(/assets/uploads/sbOffice.jpg); background-size: cover;";
+    public string $sbOfficeBg = "background-image: url(/assets/uploads/sbOffice.jpg); background-size: cover; background-position:center";
     public string $libraryBg = "background-image: url(/assets/uploads/libraryBg.jpg); background-size: cover;";
 
 // Tiles styles

@@ -3,12 +3,14 @@
 namespace Controller;
 
 use Model\Ordinance;
+use Model\Download;
 use Constants\CssConstants;
 use Helpers\SessionHelpers;
 
 class OrdinanceController
 {
     private $ordinanceModel;
+    private $downloadModel;
     private $twig;
     private $defaultFormAction;
     private $baseDir;
@@ -19,6 +21,7 @@ class OrdinanceController
     public function __construct($pdo, $twig)
     {
         $this->ordinanceModel = new Ordinance($pdo);
+        $this->downloadModel = new Download($pdo);
         $this->cssConstants = new CssConstants();
         $this->sessionHelper = new SessionHelpers();
         $this->twig = $twig;
@@ -30,6 +33,7 @@ class OrdinanceController
     public function showOrdinances($isAdmin)
     {
         $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : null;
+        $yearQuery = isset($_GET['year']) ? trim($_GET['year']) : null;
 
         if ($searchQuery)
         {
@@ -37,15 +41,19 @@ class OrdinanceController
         } 
         else 
         {
-            $ordinances = $this->ordinanceModel->getAllOrdinances();
+            $ordinances = $this->ordinanceModel->getAllOrdinances($yearQuery);
         }
+
+        $ordinanceYears = $this->ordinanceModel->getOrdinanceYears();
 
         $template = $isAdmin ? 'admin/ordinances.twig' : 'ordinances.twig';
         $context = [
             'ordinances' => $ordinances,
+            'ordinanceYears' => $ordinanceYears,
+            'selectedYear' => $yearQuery,
             'css' => $this->cssConstants,
             'currentPage' => 'ordinances',
-            'searchQuery' => $searchQuery, // Pass search query to pre-fill the search box
+            'searchQuery' => $searchQuery
         ];
 
         if ($isAdmin) {
@@ -164,28 +172,48 @@ class OrdinanceController
 
     public function readOrdinanceFile($id, $contentDisposition)
     {
-        $ordinance = $this->ordinanceModel->getOrdinance($id);
+        $ordinanceId = (int)$id;
+    
+        $ordinance = $this->ordinanceModel->getOrdinance($ordinanceId);
+        if (!$ordinance) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Ordinance not found.']);
+            return;
+        }
 
-        if (file_exists($ordinance['fileInput'])) {
+        if ($contentDisposition == "attachment") {
+            $data = json_decode(file_get_contents('php://input'), true);
+    
+            if (!isset($data['email'], $id)) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Email and ordinance ID are required.']);
+                return;
+            }
+        
+            $email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
+            
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Invalid email address.']);
+                return;
+            }
+            $this->downloadModel->logDownload($email, $ordinanceId);
+        }        
+    
+        $filePath = $ordinance['fileInput'];
+        if (file_exists($filePath)) {
             header('Content-Description: File Transfer');
             header('Content-Type: application/pdf');
-            header("Content-Disposition: {$contentDisposition}; filename=" . basename($ordinance['fileInput']));
+            header('Content-Disposition: ' . $contentDisposition . '; filename="' . basename($filePath) . '"');
             header('Expires: 0');
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
-            header('Content-Length: ' . filesize($ordinance['fileInput']));
-
-            ob_clean();
-            flush();
-
-            readfile($ordinance['fileInput']);
-
+            header('Content-Length: ' . filesize($filePath));
+            readfile($filePath);
             exit;
         } else {
-            // Handle the error if the file doesn't exist
-            header('HTTP/1.0 404 Not Found');
-            echo "File not found.";
-            exit;
+            http_response_code(404);
+            echo json_encode(['error' => 'File not found.']);
         }
     }
 

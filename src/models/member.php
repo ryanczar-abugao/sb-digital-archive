@@ -13,12 +13,18 @@ class Member
         $this->pdo = $pdo;
     }
 
-    public function getAllMembers()
+    public function getAllMembers($term = null)
     {
-        $stmt = $this->pdo->prepare("SELECT *, CONCAT(termStart, ' - ', termEnd) AS term FROM sbmembers ORDER BY term DESC");
-        $stmt->execute();
-        $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($term == null) {
+            $stmt = $this->pdo->prepare("SELECT *, CONCAT(termStart, ' - ', termEnd) AS term FROM sbmembers ORDER BY term DESC");
+            $stmt->execute();
+        } else {            
+            $stmt = $this->pdo->prepare("SELECT *, CONCAT(termStart, ' - ', termEnd) AS term FROM sbmembers WHERE CONCAT(YEAR(termStart), '-', YEAR(termEnd)) LIKE :term");
+            $stmt->bindValue(':term', '%' . $term . '%', PDO::PARAM_STR);
+            $stmt->execute();
+        }
 
+        $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
         // Format the termStart and termEnd dates
         foreach ($members as &$member) {
             $termStart = \DateTime::createFromFormat('Y-m-d', $member['termStart']);
@@ -26,9 +32,9 @@ class Member
 
             // Check if parsing is successful and format dates
             if ($termStart && $termEnd) {
-                $member['termStart'] = $termStart->format('F j, Y');
-                $member['termEnd'] = $termEnd->format('F j, Y');
-                $member['term'] = $member['termStart'] . ' to ' . $member['termEnd'];
+                $member['termStart'] = $termStart->format('Y');
+                $member['termEnd'] = $termEnd->format('Y');
+                $member['term'] = $member['termStart'] . '-' . $member['termEnd'];
             }
         }
 
@@ -83,5 +89,37 @@ class Member
     {
         $stmt = $this->pdo->prepare("DELETE FROM sbmembers WHERE memberId = :id");
         return $stmt->execute(['id' => $id]);
+    }
+
+    public function searchMember($query)
+    {
+        // Prepare the SQL query with separate LIKE conditions for each column
+        $stmt = $this->pdo->prepare(
+            "SELECT *, CONCAT(termStart, ' - ', termEnd) AS term FROM sbmembers 
+            WHERE CONCAT(firstName, ' ', lastName) LIKE :firstAndLastNameQUery
+            OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE :fullnameQUery"
+        );
+
+        // Bind the parameters with wildcards for partial matching
+        $stmt->bindValue(':firstAndLastNameQUery', '%' . $query . '%', PDO::PARAM_STR);
+        $stmt->bindValue(':fullnameQUery', '%' . $query . '%', PDO::PARAM_STR);
+
+        // Execute the statement
+        $stmt->execute();
+        $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($members as &$member) {
+            $termStart = \DateTime::createFromFormat('Y-m-d', $member['termStart']);
+            $termEnd = \DateTime::createFromFormat('Y-m-d', $member['termEnd']);
+
+            // Check if parsing is successful and format dates
+            if ($termStart && $termEnd) {
+                $member['termStart'] = $termStart->format('F j, Y');
+                $member['termEnd'] = $termEnd->format('F j, Y');
+                $member['term'] = $member['termStart'] . ' to ' . $member['termEnd'];
+            }
+        }
+
+        return $members;
     }
 }

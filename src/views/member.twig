@@ -1,62 +1,118 @@
 {% extends 'base.twig' %}
 
 {% block title %}
-    Members
+	Members
 {% endblock %}
 
 {% block content %}
-    <div class="p-8">
-        <h2 class="{{ css.textPrimary }} text-2xl font-bold mb-3">Sangguniang Bayan Municipal Officials</h2>
 
-        <div class="grid grid-cols-1 gap-6 mb-6">
-            {% for term, members in groupedMembers %}
-                <div class="my-3 mb-8">
-                    <!-- Display Term Title -->
-                    <h3 class="{{ css.textSecondary }} font-bold mb-4">Municipal Officials from {{ term }}</h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        {% for member in members %}
-                            <div class="{{ css.card }}">
-                                <div class="flex gap-2">
-                                    <!-- Image -->
-                                    <div>
-                                        <img src="{{ member.fileInput }}" alt="{{ member.firstName }} {{ member.lastName }}"
-                                             class="{{ css.cardImage }} cursor-pointer" data-member-image="{{ member.fileInput }}" onclick="openModal(event)">
-                                    </div>
-                                    <div>
-                                        <h3 class="{{ css.cardTitle }}">
-                                            {{ member.firstName }} {{ member.lastName }}
-                                        </h3>
-                                        <h3 class="{{ css.cardSubTitle }}">
-                                            {{ member.position }}
-                                        </h3>
-                                    </div>
-                                </div>
+	<div class="w-[300px] fixed top-[72px] left-[0px] h-[calc(100vh-72px)] flex lg:hidden">
+		<div class="w-[90%] {{ css.bgPrimaryHover }} p-4 shadow-lg hidden" id="sidebar">
+			<ul>
+				<li class="flex mb-2">
+					<a href="/member" class="w-full rounded-lg p-2 {{ css.bgPrimary }} hover:{{ css.bgSecondaryHover }} text-center {{ css.textWhite }} font-medium">
+						Clear Filter
+					</a>
+				</li>
+				{% for termYear, terms in groupedTerms %}
+					<li class="flex mb-2">
+						<a href="/member?term={{ termYear }}" class="w-full rounded-lg p-2 {{ selectedTerm == termYear ? css.bgSecondary : css.bgPrimary }} hover:{{ css.bgSecondaryHover }} text-center {{ selectedTerm == termYear ? css.textPrimary : css.textWhite }} font-medium">
+							{{ termYear }}
+						</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="w-[10%] pt-4" id="sidebarToggle">
+			<button class="py-2 ps-1 pe-2 rounded-r-full {{ css.bgPrimary }} hover:{{ css.bgPrimaryHover }} {{ css.textWhite }} shadow-lg">
+				<i class="fas fa-fw fa-burger"></i>
+			</button>
+		</div>
+	</div>
 
-                                <p class="{{ css.cardDescription }} mb-3">
-                                    <i class="fas fa-fw fa-location-dot"></i>
-                                    <span>{{ member.address }}</span>
-                                </p>
+	<div class="p-8">
+		<div class="grid grid-cols-12 gap-6">
+			<div class="hidden md:grid sm:col-span-3 md:col-span-2">
+				<ul>
+					<li class="flex mb-2">
+						<a href="/member" class="w-full rounded-lg p-2 {{ css.bgPrimary }} hover:{{ css.bgSecondaryHover }} text-center {{ css.textWhite }} font-medium">
+							Clear Filter
+						</a>
+					</li>
+					{% for termYear, terms in groupedTerms %}
+						<li class="flex mb-2">
+							<a href="/member?term={{ termYear|replace({' ': ''}) }}" class="w-full rounded-lg p-2 {{ selectedTerm == termYear ? css.bgSecondary : css.bgPrimary }} hover:{{ css.bgSecondaryHover }} text-center {{ selectedTerm == termYear ? css.textPrimary : css.textWhite }} font-medium">
+								{{ termYear }}
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
 
-                                <div class="{{ css.cardDescription }} member-description">
-                                    <span class="member-description-text">{{ member.description }}</span>
-                                    {% if member.description|length > 100 %}
-                                        <button class="text-blue-500 toggle-description-btn" onclick="toggleDescription(event)">See more</button>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
+			<div class="col-span-12 sm:col-span-9 md:col-span-10">
+				<div class="flex flex-wrap justify-between">
+					<h1 class="{{ css.textPrimary }} text-2xl font-bold mb-3">Sangguniang Bayan Municipal Officials</h1>
+					<form method="GET" action="/member" class="mb-3">
+						<div class="flex">
+							<input type="text" name="search" value="{{ searchQuery|default('') }}" placeholder="Search member..." class="{{ css.inputText }} rounded-none rounded-l-lg min-w-[250px]">
+							<button type="submit" class="mt-1 px-4 py-2 {{ css.bgPrimary }} {{ css.textWhite }} rounded-r-lg">Search</button>
+						</div>
+					</form>
+				</div>
+				<hr class="{{ css.separator }}">
 
-    <!-- Fullscreen Image Modal -->
-    <div id="imageModal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
-        <img id="modalImage" src="" class="max-w-full max-h-full">
-        <button class="absolute top-4 right-4 text-white text-2xl bg-black bg-opacity-80 p-2 px-4 rounded" onclick="closeModal()">×</button>
-    </div>
+				<div class="grid grid-cols-1 gap-6 mb-6">
+					{% for term, members in groupedMembers %}
+						<div
+							class="mb-3 mb-8">
+							<!-- Display Term Title -->
+							<h3 class="{{ css.textSecondary }} font-bold mb-4">Municipal Officials ( {{ term }} )</h3>
 
-    <script src="/assets/js/members.js"></script>
-{% endblock %}
+							<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+								{% for member in members %}
+									<div class="{{ css.card }}">
+										<div
+											class="flex gap-2">
+											<!-- Image -->
+											<div>
+												<img src="{{ member.fileInput }}" alt="{{ member.firstName }} {{ member.lastName }}" class="{{ css.cardImage }} cursor-pointer" data-member-image="{{ member.fileInput }}" onclick="openModal(event)">
+											</div>
+											<div>
+												<h3 class="{{ css.cardTitle }}">
+													{{ member.firstName }}
+													{{ member.lastName }}
+												</h3>
+												<h3 class="{{ css.cardSubTitle }}">
+													{{ member.position }}
+												</h3>
+											</div>
+										</div>
+
+										<p class="{{ css.cardDescription }} mb-3">
+											<i class="fas fa-fw fa-location-dot"></i>
+											<span>{{ member.address }}</span>
+										</p>
+
+										<div class="{{ css.cardDescription }} member-description">
+											<span class="member-description-text">{{ member.description }}</span>
+											{% if member.description|length > 100 %}
+												<button class="text-blue-500 toggle-description-btn" onclick="toggleDescription(event)">See more</button>
+											{% endif %}
+										</div>
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+
+		<!-- Fullscreen Image Modal -->
+		<div id="imageModal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
+			<img id="modalImage" src="" class="max-w-full max-h-full">
+			<button class="absolute top-4 right-4 text-white text-2xl bg-black bg-opacity-80 p-2 px-4 rounded" onclick="closeModal()">×</button>
+		</div>
+
+		<script src="/assets/js/members.js"></script>
+	{% endblock %}

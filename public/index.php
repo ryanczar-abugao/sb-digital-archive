@@ -24,67 +24,64 @@ $authController = new AuthController($pdo);
 $attachmentController = new AttachmentController($pdo);
 $dashboardController = new DashboardController($twig);
 
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-switch ($uri) {
-    case '/':
+$routes = [
+    '/' => function() use ($twig) {
         $cssConstants = new CssConstants();
-        echo $twig->render('home.twig', [ 
-            'css' => $cssConstants, 
+        echo $twig->render('home.twig', [
+            'css' => $cssConstants,
             'currentPage' => 'home'
         ]);
-        break;
-
-    case '/ordinances':
+    },
+    '/ordinances' => function() use ($ordinanceController) {
         $ordinanceController->showOrdinances(0);
-        break;
-
-    case '/about':
-        $aboutController->showAbout();
-        break;
-        
-    case '/member':
+    },
+    '/ordinances/download' => function($id) use ($ordinanceController) {
+        $ordinanceController->readOrdinanceFile($id, "attachment");
+    },
+    '/ordinances/year' => function($year) use ($ordinanceController) {
+        $ordinanceController->showOrdinances(0, $year);
+    },
+    '/ordinances/preview' => function($id) use ($ordinanceController) {
+        $ordinanceController->readOrdinanceFile($id, "inline");
+    },
+    '/member' => function() use ($aboutController) {
         $aboutController->showMembers();
-        break;
-
-    case '/admin/login':
+    },
+    '/about' => function() use ($aboutController) {
+        $aboutController->showAbout();
+    },
+    '/admin/login' => function() use ($authController, $twig) {
         $data = $authController->login();
         echo $twig->render('admin/login.twig', $data);
-        break;
-
-    case '/admin/logout':
+    },
+    '/admin/logout' => function() use ($authController) {
         $authController->logout();
-        break;
-
-    case '/admin/dashboard':
+    },
+    '/admin/dashboard' => function() use ($dashboardController) {
         $dashboardController->showDashboard();
-        break;
-
-    case '/admin/members':
+    },
+    '/admin/members' => function() use ($memberController) {
         $memberController->showMembers();
-        break;
-
-    case '/admin/members/create':
-        $memberController->createMember();
-        break;
-
-    case preg_match('/\/admin\/members\/edit\/(\d+)/', $uri, $matches) ? true : false:
-        $memberController->showSelectedMember($matches[1]);
-        break;
-
-    case preg_match('/\/admin\/members\/update\/(\d+)/', $uri, $matches) ? true : false:
-        $memberController->updateMember($matches[1]);
-        break;
-
-    case preg_match('/\/admin\/members\/delete\/(\d+)/', $uri, $matches) ? true : false:
-        $memberController->deleteMember($matches[1]);
-        break;
-
-    case '/admin/history':
+    },
+    '/admin/ordinances' => function() use ($ordinanceController) {
+        $ordinanceController->showOrdinances(1);
+    },
+    '/admin/ordinances/create' => function() use ($ordinanceController) {
+        $ordinanceController->createOrdinance();
+    },
+    '/admin/ordinances/edit' => function($id) use ($ordinanceController) {
+        $ordinanceController->showSelectedOrdinance(1, $id);
+    },
+    '/admin/ordinances/update' => function($id) use ($ordinanceController) {
+        $ordinanceController->updateOrdinance($id);
+    },
+    '/admin/ordinances/delete' => function($id) use ($ordinanceController) {
+        $ordinanceController->deleteOrdinance($id);
+    },
+    '/admin/history' => function() use ($historyController) {
         $historyController->showChapters();
-        break;
-
-    case '/admin/history/create':
+    },
+    '/admin/history/create' => function() use ($historyController, $attachmentController) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $chapterId = $historyController->createChapter();
 
@@ -94,63 +91,69 @@ switch ($uri) {
         } else {
             header('Location: /admin/history');
         }
-        break;
-
-    case preg_match('/\/admin\/history\/edit\/(\d+)/', $uri, $matches) ? true : false:
-        $historyController->showSelectedChapter($matches[1]);
-        break;
-
-    case preg_match('/\/admin\/history\/update\/(\d+)/', $uri, $matches) ? true : false:
-        $chapterId = $matches[1];
-        $historyController->updateChapter($chapterId);
+    },
+    '/admin/history/edit' => function($id) use ($historyController) {
+        $historyController->showSelectedChapter($id);
+    },
+    '/admin/history/update' => function($id) use ($historyController, $attachmentController) {
+        $historyController->updateChapter($id);
 
         if (isset($_FILES['attachments']) && !empty($_FILES['attachments']['name'][0])) {
-            $attachmentController->handleFileUploads($chapterId, $_FILES['attachments']);
+            $attachmentController->handleFileUploads($id, $_FILES['attachments']);
         }
 
-        $historyController->showSelectedChapter($chapterId);
-        break;
+        $historyController->showSelectedChapter($id);
+    },
+    '/admin/history/delete' => function($id) use ($historyController) {
+        $historyController->deleteChapter($id);
+    },
+    '/admin/members/create' => function() use ($memberController) {
+        $memberController->createMember();
+    },
+    '/admin/members/edit' => function($id) use ($memberController) {
+        $memberController->showSelectedMember($id);
+    },
+    '/admin/members/update' => function($id) use ($memberController) {
+        $memberController->updateMember($id);
+    },
+    '/admin/members/delete' => function($id) use ($memberController) {
+        $memberController->deleteMember($id);
+    },
+    '/admin/encrypt' => function($password) use ($twig) {
+        $cssConstants = new CssConstants();
+        echo $twig->render('encrypt_pass.twig', [
+            'css' => $cssConstants,
+            'hashedPassword' => password_hash($password, PASSWORD_DEFAULT)
+        ]);
+    }
+];
 
-    case preg_match('/\/admin\/history\/delete\/(\d+)/', $uri, $matches) ? true : false:
-        $historyController->deleteChapter($matches[1]);
-        break;
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$matched = false;
 
-    case '/admin/ordinances':
-        $ordinanceController->showOrdinances(1);
+foreach ($routes as $route => $action) {
+    if ($uri === $route) {
+        $action();
+        $matched = true;
         break;
+    }
 
-    case '/admin/ordinances/create':
-        $ordinanceController->createOrdinance();
-        break;
+    $routeWIthId = strpos($route, '/edit') !== false || 
+                   strpos($route, '/update') !== false || 
+                   strpos($route, '/delete') !== false ||
+                   strpos($route, '/download') !== false ||
+                   strpos($route, '/preview') !== false;
 
-    case preg_match('/\/admin\/ordinances\/edit\/(\d+)/', $uri, $matches) ? true : false:
-        $ordinanceController->showSelectedOrdinance(1, $matches[1]);
-        break;
-
-    case preg_match('/\/admin\/ordinances\/update\/(\d+)/', $uri, $matches) ? true : false:
-        $ordinanceController->updateOrdinance($matches[1]);
-        break;
-
-    case preg_match('/\/admin\/ordinances\/delete\/(\d+)/', $uri, $matches) ? true : false:
-        $ordinanceController->deleteOrdinance($matches[1]);
-        break;
-
-    case preg_match('/\/ordinances\/download\/(\d+)/', $uri, $matches) ? true : false:
-        $ordinanceController->readOrdinanceFile($matches[1], "attachment");
-        break;
-
-    case preg_match('/\/ordinances\/preview\/(\d+)/', $uri, $matches) ? true : false:
-        $ordinanceController->readOrdinanceFile($matches[1], "inline");
-        break;
-
-    case 'attachment/create':
-        if (preg_match('/\/attachment\/update\/(\d+)/', $uri, $matches)) {
-            $attachmentController->handleFileUploads($matches[1], $_FILES['attachments']);
+    if ($routeWIthId) {
+        if (preg_match('#^' . preg_quote($route, '#') . '/(\d+)$#', $uri, $matches)) {
+            $action($matches[1]); 
+            $matched = true;
+            break;
         }
-        break;
+    }
+}
 
-    default:
-        http_response_code(404);
-        echo "404 Not Found";
-        break;
+if (!$matched) {
+    http_response_code(404);
+    echo "404 Not Found";
 }

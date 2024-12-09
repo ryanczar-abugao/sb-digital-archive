@@ -10,3 +10,22 @@ body {
 h1, h2, h3, h4 {
   font-family: 'Poppins', sans-serif;
 }
+
+/* Add this to your CSS file (or inside a `<style>` tag if inline) */
+#sidebar {
+  transition: transform 1s ease-in-out;
+  transform: translateX(0); /* Sidebar starts fully visible */
+}
+
+#sidebar.hidden {
+  transform: translateX(-120%); /* Sidebar moves off-screen */
+}
+
+#sidebarToggle.opened + #sidebar {
+  transform: translateX(0); /* When sidebar toggle is opened, move sidebar back to view */
+}
+
+#sidebarToggle.closed + #sidebar {
+  transform: translateX(-120%); /* When sidebar toggle is closed, move sidebar off-screen */
+}
+

@@ -29,7 +29,18 @@ class AboutController {
     }
 
     public function showMembers() {
-        $members = $this->memberModel->getAllMembers();
+
+        $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : null;
+        $termQuery = isset($_GET['term']) ? trim($_GET['term']) : null;
+
+        if ($searchQuery)
+        {
+            $members = $this->memberModel->searchMember($searchQuery);
+        } 
+        else 
+        {
+            $members = $this->memberModel->getAllMembers($termQuery);
+        }
 
         $groupedMembers = [];
         foreach ($members as $member) {
@@ -39,9 +50,21 @@ class AboutController {
             }
             $groupedMembers[$term][] = $member;
         }
-        
+
+        $termss = $this->memberModel->getAllMembers();
+        $groupedTerms = [];
+        foreach ($termss as $terms) {
+            $term = $terms['term'];
+            if (!isset($groupedTerms[$term])) {
+                $groupedTerms[$term] = [];
+            }
+            $groupedTerms[$term][] = $term;
+        }
+                
         echo $this->twig->render('member.twig', [
             'groupedMembers' => $groupedMembers,
+            'groupedTerms' => $groupedTerms,
+            'selectedTerm' => $termQuery,
             'css' => $this->cssConstants, 
             'currentPage' => 'member'
         ]);

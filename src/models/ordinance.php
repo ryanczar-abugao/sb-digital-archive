@@ -13,9 +13,21 @@ class Ordinance
         $this->pdo = $pdo;
     }
 
-    public function getAllOrdinances()
+    public function getAllOrdinances($year = null)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM ordinances ORDER BY year DESC");
+        if ($year == null) {
+            $stmt = $this->pdo->prepare("SELECT * FROM ordinances ORDER BY year DESC");
+            $stmt->execute();
+        } else {            
+            $stmt = $this->pdo->prepare("SELECT * FROM ordinances WHERE year = :year ORDER BY year DESC");
+            $stmt->execute(['year' => $year]);
+        }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getOrdinanceYears()
+    {
+        $stmt = $this->pdo->prepare("SELECT DISTINCT year FROM ordinances ORDER BY year DESC");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

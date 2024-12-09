@@ -4,41 +4,100 @@
 {% endblock %}
 
 {% block content %}
+
+	<div class="w-[300px] fixed top-[72px] left-[0px] h-[calc(100vh-72px)] flex lg:hidden">
+		<div class="w-[90%] {{ css.bgPrimaryHover }} p-4 shadow-lg hidden" id="sidebar">
+			<ul>
+				<li class="flex mb-2">
+					<a href="/ordinances" class="w-full rounded-lg p-2 {{ css.bgPrimary }} hover:{{ css.bgSecondaryHover }} text-center {{ css.textWhite }} font-medium">
+						Clear Filter
+					</a>
+				</li>
+				{% for year in ordinanceYears %}
+					<li class="flex mb-2">
+						<a href="/ordinances?year={{ year.year }}" class="w-full rounded-lg p-2 {{ selectedYear == year.year ? css.bgSecondary : css.bgPrimary }} hover:{{ css.bgSecondaryHover }} text-center {{ selectedYear == year.year ? css.textPrimary : css.textWhite }} font-medium">
+							{{ year.year }}
+						</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="w-[10%] pt-4" id="sidebarToggle">
+			<button class="py-2 ps-1 pe-2 rounded-r-full {{ css.bgPrimary }} hover:{{ css.bgPrimaryHover }} {{ css.textWhite }} shadow-lg">
+				<i class="fas fa-fw fa-burger"></i>
+			</button>
+		</div>
+	</div>
+
 	<div class="p-8">
-		<div class="flex flex-wrap justify-between">
-			<h1 class="{{ css.textPrimary }} text-4xl font-bold mb-3">Ordinances</h1>
-			<form method="GET" action="/ordinances" class="mb-4">
-				<div class="flex">
-					<input type="text" name="search" value="{{ searchQuery|default('') }}" placeholder="Search ordinances..." class="{{ css.inputText }} rounded-none rounded-l-lg min-w-[250px]">
-					<button type="submit" class="mt-1 px-4 py-2 {{ css.bgPrimary }} {{ css.textWhite }} rounded-r-lg">Search</button>
+		<div class="grid grid-cols-12 gap-6">
+			<div class="hidden md:grid sm:col-span-3 md:col-span-2">
+				<ul>
+					<li class="flex mb-2">
+						<a href="/ordinances" class="w-full rounded-lg p-2 {{ css.bgPrimary }} hover:{{ css.bgSecondaryHover }} text-center {{ css.textWhite }} font-medium">
+							Clear Filter
+						</a>
+					</li>
+					{% for year in ordinanceYears %}
+						<li class="flex mb-2">
+							<a href="/ordinances?year={{ year.year }}" class="w-full rounded-lg p-2 {{ selectedYear == year.year ? css.bgSecondary : css.bgPrimary }} hover:{{ css.bgSecondaryHover }} text-center {{ selectedYear == year.year ? css.textPrimary : css.textWhite }} font-medium">
+								{{ year.year }}
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+
+			<div class="col-span-12 sm:col-span-9 md:col-span-10">
+				<div class="flex flex-wrap justify-between">
+					<h1 class="{{ css.textPrimary }} text-2xl font-bold mb-3">Ordinances</h1>
+					<form method="GET" action="/ordinances" class="mb-3">
+						<div class="flex">
+							<input type="text" name="search" value="{{ searchQuery|default('') }}" placeholder="Search ordinances..." class="{{ css.inputText }} rounded-none rounded-l-lg min-w-[250px]">
+							<button type="submit" class="mt-1 px-4 py-2 {{ css.bgPrimary }} {{ css.textWhite }} rounded-r-lg">Search</button>
+						</div>
+					</form>
+				</div>
+				<hr class="{{ css.separator }}">
+
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+					{% if ordinances is empty %}
+						<p class="text-gray-500">No ordinances found.</p>
+					{% else %}
+						{% for ordinance in ordinances %}
+							<div class="{{ css.card }}">
+								<h2 class="{{ css.cardTitle }}">{{ ordinance.title }}</h2>
+								<h3 class="{{ css.cardSubTitle }}">{{ ordinance.authors }}</h3>
+								<div class="{{ css.cardDescription }} ordinance-description">
+									<span class="ordinance-description-text">{{ ordinance.description }}</span>
+									{% if ordinance.description|length > 100 %}
+										<button class="text-blue-500 toggle-description-btn" onclick="toggleDescription(event)">See more</button>
+									{% endif %}
+								</div>
+								<div class="{{ css.cardBtnContainer }} mt-4">
+									<a href="/ordinances/preview/{{ ordinance.ordinanceId }}" class="{{ css.cardPrimaryBtn }}">Preview</a>
+									<a href="javascript:void(0)" class="{{ css.cardSecondaryBtn }} {{ css.textPrimary }}" onclick="openModal('{{ ordinance.ordinanceId }}')">
+										<i class="{{ css.downloadIcon }}"></i>
+									</a>
+								</div>
+							</div>
+						{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="emailModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+		<div class="bg-white p-6 rounded shadow-lg w-[90%] md:w-1/3">
+			<h2 class="text-lg font-bold mb-4">Enter Your Email</h2>
+			<form id="emailForm" class="flex flex-col">
+				<input type="email" id="emailInput" name="email" placeholder="Your email address" required class="{{ css.inputText }} mb-4 p-2 rounded border border-gray-300">
+				<div class="flex justify-end">
+					<button type="button" onclick="closeModal()" class="px-4 py-2 mr-2 {{ css.bgSecondary }} {{ css.textWhite }} rounded">Cancel</button>
+					<button type="submit" class="px-4 py-2 {{ css.bgPrimary }} {{ css.textPrimary }} rounded">Download</button>
 				</div>
 			</form>
-		</div>
-		<hr class="{{ css.separator }}">
-
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-			{% if ordinances is empty %}
-				<p class="text-gray-500">No ordinances found.</p>
-			{% else %}
-				{% for ordinance in ordinances %}
-					<div class="{{ css.card }}">
-						<h2 class="{{ css.cardTitle }}">{{ ordinance.title }}</h2>
-						<h3 class="{{ css.cardSubTitle }}">{{ ordinance.authors }}</h3>
-						<div class="{{ css.cardDescription }} ordinance-description">
-							<span class="ordinance-description-text">{{ ordinance.description }}</span>
-							{% if ordinance.description|length > 100 %}
-								<button class="text-blue-500 toggle-description-btn" onclick="toggleDescription(event)">See more</button>
-							{% endif %}
-						</div>
-						<div class="{{ css.cardBtnContainer }} mt-4">
-							<a href="/ordinances/preview/{{ ordinance.ordinanceId }}" class="{{ css.cardPrimaryBtn }}">Preview</a>
-							<a href="/ordinances/download/{{ ordinance.ordinanceId }}" class="{{ css.cardSecondaryBtn }}">
-								<i class="{{ css.downloadIcon }}"></i>
-							</a>
-						</div>
-					</div>
-				{% endfor %}
-			{% endif %}
 		</div>
 	</div>
 

@@ -8,6 +8,7 @@ require '../src/models/ordinance.php';
 require '../src/models/member.php';
 require '../src/models/history.php';
 require '../src/models/attachment.php';
+require '../src/models/download.php';
 require '../src/controllers/ordinance_controller.php';
 require '../src/controllers/member_controller.php';
 require '../src/controllers/history_controller.php';

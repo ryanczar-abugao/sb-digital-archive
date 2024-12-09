@@ -16,6 +16,18 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+
+  // Toggle the sidebar when the button is clicked
+  sidebarToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('hidden');  // Toggle visibility of sidebar
+    sidebarToggle.classList.toggle('opened'); // Toggle the button's active state
+    sidebarToggle.classList.toggle('closed'); // Change button state for closing
+  });
+});
+
 // Function to toggle description visibility
 function toggleDescription(event) {
   const descriptionText = event.target.previousElementSibling; // Get the description text span

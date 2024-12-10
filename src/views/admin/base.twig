@@ -17,63 +17,78 @@
 	</head>
 	<body class="{{ css.bg }} text-sm md:text-base grid grid-cols-12 h-screen">
 		<nav id="sidebar" class="{{ css.sidebar }} hidden 2xl:block 2xl:col-span-2">
-			<div class="flex items-center p-4 pb-0 {{ css.textAccent }}">
-				<img src="/assets/uploads/SBLogo.png" alt="Sangunian Bayan Logo" class="w-[40px] h-[40px] mr-2"/>
-				<h1 class="text-lg font-bold {{ css.textWhite }}">SBSJ: DIGITAL ARCHIVE</h1>
-			</div>
+			<div class="sticky top-[0px]">
+				<div class="flex items-center p-4 pb-0 {{ css.textAccent }}">
+					<img src="/assets/uploads/SBLogo.png" alt="Sangunian Bayan Logo" class="w-[40px] h-[40px] mr-2"/>
+					<h1 class="text-lg font-bold {{ css.textWhite }}">SBSJ: DIGITAL ARCHIVE</h1>
+				</div>
 
-			<ul class="{{ css.sidebarNavs }}">
-				{% if isLoggedIn %}
-					<li class="{{ css.sidebarNav }}">
-						<a href="/admin/dashboard" class="{{ css.headerNavBtn }} {{ currentPage == 'dashboard' ? css.navActive : '' }}" aria-label="Go to Dashboard">
-							<i class="{{ css.gauge }}"></i>	<span>Dashboard</span>
-						</a>
-					</li>
-					<li class="{{ css.sidebarNav }}">
-						<a href="/admin/members" class="{{ css.headerNavBtn }} {{ currentPage == 'members' ? css.navActive : '' }}" aria-label=" view members">
-							<i class="{{ css.peopleRoofIcon }}"></i>	<span>Members</span>
-						</a>
-					</li>
-					<li class="{{ css.sidebarNav }}">
-						<a href="/admin/history" class="{{ css.headerNavBtn }} {{ currentPage == 'history' ? css.navActive : '' }}" aria-label=" view history">
-							<i class="{{ css.clockRotateLeftIcon }}"></i>	<span>History</span>
-						</a>
-					</li>
-					<li class="{{ css.sidebarNav }}">
-						<a href="/admin/ordinances" class="{{ css.headerNavBtn }} {{ currentPage == 'ordinances' ? css.navActive : '' }}" aria-label=" view ordinances">
-							<i class="{{ css.scrollIcon }}"></i>	<span>Ordinances</span>
-						</a>
-					</li>
-					<li class="{{ css.sidebarNav }}">
-						<a href="/admin/logout" class="{{ css.headerNavBtn }}" aria-label="Logout">
-							<i class="{{ css.rightFromBracket }}"></i>	<span>Logout</span>
-						</a>
-					</li>
-				{% else %}
-					<li class="{{ css.sidebarNav }}">
-						<a href="/" class="{{ css.headerNavBtn }}" aria-label="Guest's Home">Guest's Home</a>
-					</li>
-					<li class="{{ css.sidebarNav }}">
-						<a href="/admin/login" class="{{ css.headerNavBtn }} {{ currentPage == 'login' ? css.navActive : '' }}" aria-label="Login">Login</a>
-					</li>
-				{% endif %}
-			</ul>
+				<ul class="{{ css.sidebarNavs }}">
+					{% if isLoggedIn %}
+						<li class="{{ css.sidebarNav }}">
+							<a href="/admin/dashboard" class="{{ css.headerNavBtn }} {{ currentPage == 'dashboard' ? css.navActive : '' }}" aria-label="Go to Dashboard">
+								<i class="{{ css.gauge }}"></i>
+								<span>Dashboard</span>
+							</a>
+						</li>
+						<li class="{{ css.sidebarNav }}">
+							<a href="/admin/news" class="{{ css.headerNavBtn }} {{ currentPage == 'news' ? css.navActive : '' }}" aria-label=" view news">
+								<i class="{{ css.newspaperIcon }}"></i>
+								<span>News</span>
+							</a>
+						</li>
+						</li>
+						<li class="{{ css.sidebarNav }}">
+							<a href="/admin/members" class="{{ css.headerNavBtn }} {{ currentPage == 'members' ? css.navActive : '' }}" aria-label=" view members">
+								<i class="{{ css.peopleRoofIcon }}"></i>
+								<span>Members</span>
+							</a>
+						</li>
+						<li class="{{ css.sidebarNav }}">
+							<a href="/admin/history" class="{{ css.headerNavBtn }} {{ currentPage == 'history' ? css.navActive : '' }}" aria-label=" view history">
+								<i class="{{ css.clockRotateLeftIcon }}"></i>
+								<span>History</span>
+							</a>
+						</li>
+						<li class="{{ css.sidebarNav }}">
+							<a href="/admin/ordinances" class="{{ css.headerNavBtn }} {{ currentPage == 'ordinances' ? css.navActive : '' }}" aria-label=" view ordinances">
+								<i class="{{ css.scrollIcon }}"></i>
+								<span>Ordinances</span>
+							</a>
+						</li>
+						<li class="{{ css.sidebarNav }}">
+							<a href="/admin/logout" class="{{ css.headerNavBtn }}" aria-label="Logout">
+								<i class="{{ css.rightFromBracket }}"></i>
+								<span>Logout</span>
+							</a>
+						</li>
+					{% else %}
+						<li class="{{ css.sidebarNav }}">
+							<a href="/" class="{{ css.headerNavBtn }}" aria-label="Guest's Home">Guest's Home</a>
+						</li>
+						<li class="{{ css.sidebarNav }}">
+							<a href="/admin/login" class="{{ css.headerNavBtn }} {{ currentPage == 'login' ? css.navActive : '' }}" aria-label="Login">Login</a>
+						</li>
+					{% endif %}
+				</ul>
+			</div>
 		</nav>
 
-		<div class="col-span-12 2xl:col-span-10">
+		<div id="content" class="col-span-12 2xl:col-span-10">
 			<header class="{{ css.header }}">
 				<div class="flex items-center mb-5 2xl:mb-0 2xl:hidden">
 					<img src="/assets/uploads/SBLogo.png" alt="Sangunian Bayan Logo" class="w-[40px] h-[40px] mr-2"/>
 					<h1 class="text-lg font-bold {{ css.textWhite }}">SBSJ: DIGITAL ARCHIVE</h1>
 				</div>
 
-				<button class="rounded hidden 2xl:block">
+				<button class="rounded-full p-2 hidden 2xl:block opened hover:{{ css.bgAccent }}" id="sidebarToggle">
 					<i class="fas fa-bars fa-fw fa-lg"></i>
 				</button>
 
 				<nav class="2xl:hidden">
 					{% if isLoggedIn %}
 						<a href="/admin/dashboard" class="{{ css.headerNavBtn }} {{ currentPage == 'dashboard' ? css.navActive : '' }}" aria-label="Go to Dashboard">Dashboard</a>
+						<a href="/admin/news" class="{{ css.headerNavBtn }} {{ currentPage == 'news' ? css.navActive : '' }}" aria-label=" view news">News</a>
 						<a href="/admin/members" class="{{ css.headerNavBtn }} {{ currentPage == 'members' ? css.navActive : '' }}" aria-label=" view members">Members</a>
 						<a href="/admin/history" class="{{ css.headerNavBtn }} {{ currentPage == 'history' ? css.navActive : '' }}" aria-label=" view history">History</a>
 						<a href="/admin/ordinances" class="{{ css.headerNavBtn }} {{ currentPage == 'ordinances' ? css.navActive : '' }}" aria-label=" view ordinances">Ordinances</a>
@@ -85,17 +100,16 @@
 				</nav>
 			</header>
 
-			<main class="min-h-[calc(100vh-152px)] md:min-h-[calc(100vh-112px)] container mx-auto"> 
-				{% block content %}{% endblock %}
-			</main>
+			<main class="min-h-[calc(100vh-152px)] md:min-h-[calc(100vh-128px)] container mx-auto"> {% block content %}{% endblock %}
+				</main>
 
-			<footer class="{{ css.footer }}">
-				<div class="container mx-auto text-center">
-					<p>&copy; 2024 Sanggunian Bayan of San Jose, Camarines Sur. All rights reserved.</p>
-				</div>
-			</footer>
-		</div>
+				<footer class="{{ css.footer }}">
+					<div class="container mx-auto text-center">
+						<p>&copy; 2024 Sanggunian Bayan of San Jose, Camarines Sur. All rights reserved.</p>
+					</div>
+				</footer>
+			</div>
 
-		<script src="/assets/js/common.js"></script>
-	</body>
-</html>
+			<script src="/assets/js/common.js"></script>
+		</body>
+	</html>

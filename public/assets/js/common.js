@@ -11,3 +11,18 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebar = document.getElementById('sidebar');
+  const content = document.getElementById('content');
+  const toggleButton = document.getElementById('sidebarToggle');
+
+  toggleButton.addEventListener('click', () => {
+      const isOpened = toggleButton.classList.toggle('opened');
+      toggleButton.classList.toggle('closed', !isOpened);
+
+      sidebar.classList.toggle('2xl:block', isOpened);
+      content.classList.toggle('2xl:col-span-10', isOpened);
+      content.classList.toggle('2xl:col-span-12', !isOpened);
+  });
+});
+

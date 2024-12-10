@@ -77,13 +77,24 @@ CREATE TABLE histories (
     FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE SET NULL
 );
 
+CREATE TABLE news (
+    newsId INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    contents TEXT NOT NULL,
+    createdBy VARCHAR(50) NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedBy VARCHAR(50) NULL,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    userId INT,
+    FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE SET NULL
+);
+
 CREATE TABLE attachments (
     attachmentId INT AUTO_INCREMENT PRIMARY KEY,
-    historyId INT,
-    ordinanceId INT,
+    newsId INT,
+    lineNum INT,
     url VARCHAR(255) NOT NULL,
-    FOREIGN KEY (historyId) REFERENCES histories(historyId) ON DELETE CASCADE,
-    FOREIGN KEY (ordinanceId) REFERENCES ordinances(ordinanceId) ON DELETE CASCADE
+    FOREIGN KEY (newsId) REFERENCES news(newsId) ON DELETE CASCADE
 );
 
 CREATE TABLE downloads (

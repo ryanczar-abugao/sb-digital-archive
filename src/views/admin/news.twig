@@ -1,0 +1,98 @@
+{% extends '/admin/base.twig' %}
+
+{% block title %}Manage News
+{% endblock %}
+
+{% block content %}
+	<div class="p-8">
+		<h1 class="{{ css.textPrimary }} text-4xl font-bold mb-3">Manage News</h1>
+		<p class="{{ css.textSecondary }} text-lg mb-4">
+			This page allows you to manage news articles. You can add, edit, or delete articles to maintain an accurate and comprehensive record of our news.
+		</p>
+
+		<div popover id="newsForm" class="{{ css.formPopover }}">
+			<div class="{{ css.formPopoverHeader }}">
+				<h2 class="text-2xl font-bold">News Form</h2>
+				<button class="{{ css.formPopoverCloseBtn }}" popovertarget="newsForm">
+					<i class="{{ css.xmarkIcon }}"></i>
+				</button>
+			</div>
+
+			<div class="px-8 py-4">
+				<form action="{{ formAction }}" method="POST" enctype="multipart/form-data">
+					<input type="hidden" name="newsId" value="{{ selectedNews.newsId ?? '' }}">
+
+					<div class="grid grid-cols-1 gap-3 mb-3">
+						<div>
+							<label for="title">Title:</label>
+							<input type="text" id="title" name="title" required class="{{ css.inputText }}" value="{{ selectedNews.title ?? '' }}">
+						</div>
+
+						<div>
+							<label for="contents">Contents:</label>
+							<trix-toolbar id="editor-toolbar"></trix-toolbar>
+							<div class="mb-6">
+								<input id="contents" type="hidden" name="contents" value="{{ selectedNews.contents ?? '' }}">
+								<trix-editor toolbar="editor-toolbar" input="contents"></trix-editor>
+							</div>
+						</div>
+
+						<!-- File upload for images -->
+						<div>
+							<label for="image">Upload Images (Max 2 files, 2MB each):</label>
+							<input type="file" id="image" name="image[]" accept="image/*" multiple class="{{ css.inputText }}" onchange="validateFiles()">
+							<p id="imageError" style="color: red; display: none;">Please upload images, each with a maximum size of 3MB.</p>
+						</div>
+					</div>
+
+					<div class="{{ css.formPopoverBtnContainer }}">
+						<button type="submit" class="{{ css.saveBtn }}">
+							<i class="{{ css.saveIcon }}"></i>
+							Save
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<button class="{{ css.formPopoverBtn }}" popovertarget="newsForm" id="formBtn">
+			<i class="{{ css.editIcon }}"></i>
+			News Form</button>
+
+		<hr class="{{ css.seperator }}">
+
+		<div class="{{ css.tableContainer }}">
+			<table class="{{ css.table }}">
+				<thead>
+					<tr class="{{ css.textPrimary }}">
+						<th class="{{ css.tableHeader }} w-[25px]">Actions</th>
+						<th class="{{ css.tableHeader }}">Title</th>
+						<th class="{{ css.tableHeader }} min-w-[170px]">Date Created</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for news in newsArticles %}
+						<tr class="{{ css.tableRows }} {{ css.textSecondary }}">
+							<td class="{{ css.tableRowData }}">
+								<div class="{{ css.actionContainer }}">
+									<a href="/admin/news/edit/{{ news.newsId }}" class="{{ css.editBtn }}">
+										<i class="{{ css.editIcon }}"></i>
+										<span>Edit</span>
+									</a>
+									<a href="/admin/news/delete/{{ news.newsId }}" class="{{ css.deleteBtn }}">
+										<i class="{{ css.deleteIcon }}"></i>
+										<span>Delete</span>
+									</a>
+								</div>
+							</td>
+							<td class="{{ css.tableRowData }}">{{ news.title }}</td>
+							<td class="{{ css.tableRowData }}">{{ news.createdAt }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<script src="/assets/js/news.js"></script>
+{% endblock %}

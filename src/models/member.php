@@ -16,21 +16,20 @@ class Member
     public function getAllMembers($term = null)
     {
         if ($term == null) {
-            $stmt = $this->pdo->prepare("SELECT *, CONCAT(termStart, ' - ', termEnd) AS term FROM sbmembers ORDER BY term DESC");
+            $stmt = $this->pdo->prepare("SELECT *, CONCAT(YEAR(termStart), ' - ', YEAR(termEnd)) AS term FROM sbmembers ORDER BY termStart DESC");
             $stmt->execute();
-        } else {            
-            $stmt = $this->pdo->prepare("SELECT *, CONCAT(termStart, ' - ', termEnd) AS term FROM sbmembers WHERE CONCAT(YEAR(termStart), '-', YEAR(termEnd)) LIKE :term");
+        } else {
+            $stmt = $this->pdo->prepare("SELECT *, CONCAT(YEAR(termStart), ' - ', YEAR(termEnd)) AS term FROM sbmembers WHERE CONCAT(YEAR(termStart), '-', YEAR(termEnd)) LIKE :term");
             $stmt->bindValue(':term', '%' . $term . '%', PDO::PARAM_STR);
             $stmt->execute();
         }
 
         $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        // Format the termStart and termEnd dates
+
         foreach ($members as &$member) {
             $termStart = \DateTime::createFromFormat('Y-m-d', $member['termStart']);
             $termEnd = \DateTime::createFromFormat('Y-m-d', $member['termEnd']);
 
-            // Check if parsing is successful and format dates
             if ($termStart && $termEnd) {
                 $member['termStart'] = $termStart->format('Y');
                 $member['termEnd'] = $termEnd->format('Y');

@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block content %}
-	<section style="{{ css.sbOfficeBg }}">
+	<section style="{{ css.sbOfficeBg }} scroll-section">
 		<div class="{{ css.heroSection }}">
 			<div class="flex justify-items-center mb-5">
 				<img src="/assets/uploads/SBLogo.png" alt="SB Logo" class="w-[150px] h-[150px]">
@@ -12,7 +12,43 @@
 			<h1 class="{{ css.heroSectionTitle }}">Digital Archive of the Sangguniang Bayan, San Jose:</h1>
 			<p class="{{ css.heroSectionDescription }} italic">A Municipal Document Management System</p>
 			<p class="{{ css.heroSectionDescription }} ">San Jose, Camarines Sur, Philippines, 4423</p>
-			<a href="/ordinances" class="{{ css.heroSectionCta }}">Go to Ordinances</a>
+			<a href="#latest-news" class="scroll-link {{ css.heroSectionCta }}">Go to Latest News</a>
 		</div>
 	</section>
+
+	<!-- News Section with Snap Scrolling -->
+	<section id="latest-news" class="{{ css.newsSection }} py-10">
+		<div class="container mx-auto px-4">
+			<h2 class="{{ css.newsSectionTitle }} text-3xl font-bold mb-5">Latest News</h2>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+				{% for news in newsArticles %}
+					<div class="bg-white shadow-lg rounded-lg overflow-hidden">
+						{% if news.attachments is not empty %}
+							<div class="grid gap-2 mb-4" style="grid-template-columns: repeat({{ news.attachments|length }}, 1fr);">
+								{% for image in news.attachments %}
+									<img src="{{ image.url }}" alt="News Image" class="w-full h-[250px] object-cover">
+								{% endfor %}
+							</div>
+						{% endif %}
+						<div class="p-4">
+							<h3 class="{{ css.newsItemTitle }} text-xl font-semibold">{{ news.title }}</h3>
+							<div class="text-sm text-gray-500 mb-5">
+								<span>Published by:
+									{{ news.author }}</span>
+								|
+								<span>Published on:
+									{{ news.published_at|date("F j, Y") }}</span>
+							</div>
+							<div class="relative">
+								<p class="{{ css.newsItemDescription }} truncate-text {{ css.textSecondary }}" data-full-text="{{ news.contents }}">
+									{{ news.contents | raw  }}
+								</p>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</section>
+
 {% endblock %}

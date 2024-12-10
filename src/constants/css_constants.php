@@ -53,12 +53,10 @@ class CssConstants
     public string $heroSectionDescription;
     public string $heroSectionCta;
 
-    public string $featureSection;
-    public string $featureSectionTitle;
-    public string $featureSectionCards;
-    public string $featureSectionCard;
-    public string $featureSectionCardTitle;
-    public string $featureSectionCardDescription;
+    public string $newsSection;
+    public string $newsSectionTitle;
+    public string $newsItemTitle;
+    public string $newsItemDescription;
     
     public string $footer;
 
@@ -140,6 +138,7 @@ class CssConstants
     public string $clockRotateLeftIcon;
     public string $scrollIcon;
     public string $xmarkIcon;
+    public string $newspaperIcon;
     public string $gauge;
     public string $rightFromBracket;
 
@@ -177,12 +176,10 @@ class CssConstants
         $this->heroSectionCta = "{$this->bgAccent} {$this->textWhite} hover:{$this->bgAccentHover} py-3 px-6 rounded-lg font-semibold text-xl mt-3";
 
         // Home Feature styles
-        $this->featureSection = "pt-8 pb-12 px-8 ";
-        $this->featureSectionTitle = "text-3xl font-bold mb-12";
-        $this->featureSectionCards = "grid grid-cols-1 md:grid-cols-3 gap-8";
-        $this->featureSectionCard = "{$this->bgWhite} {$this->textPrimary} border border-{$this->colorPrimary} p-6 rounded-lg shadow-lg";
-        $this->featureSectionCardTitle = "text-2xl font-semibold mb-4";
-        $this->featureSectionCardDescription = "text-lg";
+        $this->newsSection = "pt-8 pb-12 px-8 ";
+        $this->newsSectionTitle = "text-3xl font-bold mb-12";
+        $this->newsItemTitle = "text-2xl font-semibold mb-2";
+        $this->newsItemDescription = "text-lg";
         
         $this->footer = "{$this->bgPrimary} {$this->textWhite} p-4";
 
@@ -254,6 +251,7 @@ class CssConstants
         $this->clockRotateLeftIcon = $this->icon . "fa-clock-rotate-left";
         $this->scrollIcon = $this->icon . "fa-scroll";
         $this->xmarkIcon = $this->icon . "fa-xmark";
+        $this->newspaperIcon = $this->icon . "fa-newspaper";
         $this->gauge = $this->icon . "fa-gauge";
         $this->rightFromBracket = $this->icon . "fa-right-from-bracket";
 

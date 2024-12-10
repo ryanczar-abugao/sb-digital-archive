@@ -1,6 +1,7 @@
 html {
   padding: 0;
   margin: 0;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -29,3 +30,19 @@ h1, h2, h3, h4 {
   transform: translateX(-120%); /* When sidebar toggle is closed, move sidebar off-screen */
 }
 
+.truncate-text {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Number of lines to show */
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  max-height: 4.5em; /* Adjust according to line height */
+}
+
+.see-more-btn {
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
+  background: none;
+  padding: 0;
+}

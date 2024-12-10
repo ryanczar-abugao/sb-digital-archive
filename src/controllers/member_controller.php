@@ -1,11 +1,13 @@
 <?php
+
 namespace Controller;
 
 use Model\Member;
 use Constants\CssConstants;
 use Helpers\SessionHelpers;
 
-class MemberController{
+class MemberController
+{
     private $memberModel;
     private $twig;
     private $defaultFormAcion;
@@ -14,7 +16,8 @@ class MemberController{
     private $cssConstants;
     private $sessionHelper;
 
-    public function __construct($pdo, $twig) {
+    public function __construct($pdo, $twig)
+    {
         $this->memberModel = new Member($pdo);
         $this->cssConstants = new CssConstants();
         $this->sessionHelper = new SessionHelpers();
@@ -24,7 +27,8 @@ class MemberController{
         $this->fileBaseName = "member_";
     }
 
-    public function showMembers() {
+    public function showMembers()
+    {
         session_start();
 
         $this->sessionHelper->verifyLoggedUser();
@@ -41,15 +45,16 @@ class MemberController{
         }
 
         echo $this->twig->render('admin/members.twig', [
-            'groupedMembers' => $groupedMembers, 
+            'groupedMembers' => $groupedMembers,
             'formAction' => $this->defaultFormAcion,
             'css' => $this->cssConstants,
-            'isLoggedIn' => isset($_SESSION['userId']), 
+            'isLoggedIn' => isset($_SESSION['userId']),
             'currentPage' => 'members'
         ]);
     }
 
-    public function showSelectedMember($id) {
+    public function showSelectedMember($id)
+    {
         session_start();
 
         $this->sessionHelper->verifyLoggedUser();
@@ -67,16 +72,17 @@ class MemberController{
         }
 
         echo $this->twig->render('admin/members.twig', [
-            'groupedMembers' => $groupedMembers, 
+            'groupedMembers' => $groupedMembers,
             'selectedMember' => $member,
             'formAction' => "/admin/members/update/$id",
             'css' => $this->cssConstants,
-            'isLoggedIn' => isset($_SESSION['userId']), 
+            'isLoggedIn' => isset($_SESSION['userId']),
             'currentPage' => 'members'
         ]);
     }
-    
-    public function createMember() {
+
+    public function createMember()
+    {
         session_start();
 
         $this->sessionHelper->verifyLoggedUser();
@@ -90,9 +96,9 @@ class MemberController{
             $gender = $_POST['gender'];
             $address = $_POST['address'];
             $position = $_POST['position'];
-            $createdBy = $_SESSION['userId']; 
-            $termStart = $_POST['termStart']; 
-            $termEnd = $_POST['termEnd']; 
+            $createdBy = $_SESSION['userId'];
+            $termStart = $_POST['termStart'];
+            $termEnd = $_POST['termEnd'];
 
             // Handle file upload
             $fileInput = '';
@@ -115,15 +121,16 @@ class MemberController{
 
         $members = $this->memberModel->getAllMembers();
         echo $this->twig->render('admin/members.twig', [
-            'members' => $members, 
+            'members' => $members,
             'formAction' => $this->defaultFormAcion,
             'css' => $this->cssConstants,
-            'isLoggedIn' => isset($_SESSION['userId']), 
+            'isLoggedIn' => isset($_SESSION['userId']),
             'currentPage' => 'members'
         ]);
     }
 
-    public function updateMember($id) {
+    public function updateMember($id)
+    {
         session_start();
 
         $this->sessionHelper->verifyLoggedUser();
@@ -138,9 +145,9 @@ class MemberController{
             $gender = $_POST['gender'];
             $address = $_POST['address'];
             $position = $_POST['position'];
-            $updatedBy = $_SESSION['userId']; 
-            $termStart = $_POST['termStart']; 
-            $termEnd = $_POST['termEnd']; 
+            $updatedBy = $_SESSION['userId'];
+            $termStart = $_POST['termStart'];
+            $termEnd = $_POST['termEnd'];
 
             // Handle file upload
             $fileInput = $selectedMember['fileInput']; // Default to existing picture
@@ -153,7 +160,7 @@ class MemberController{
                 move_uploaded_file($_FILES['fileInput']['tmp_name'], $fullPath);
                 $fileInput = $targetPath;
             }
-            
+
 
             $this->memberModel->updateMember($id, $firstName, $middleName, $lastName, $description, $gender, $address, $position, $fileInput, $updatedBy, $termStart, $termEnd);
             header("Location: /admin/members/edit/$id");
@@ -162,18 +169,19 @@ class MemberController{
 
         $members = $this->memberModel->getAllMembers();
         echo $this->twig->render('admin/members.twig', [
-            'members' => $members, 
+            'members' => $members,
             'selectedMember' => $selectedMember,
             'formAction' => $this->defaultFormAcion,
             'css' => $this->cssConstants,
-            'isLoggedIn' => isset($_SESSION['userId']), 
+            'isLoggedIn' => isset($_SESSION['userId']),
             'currentPage' => 'members'
         ]);
     }
 
-    public function deleteMember($id) {
+    public function deleteMember($id)
+    {
         session_start();
-        
+
         $this->sessionHelper->verifyLoggedUser();
 
         $this->memberModel->deleteMember($id);

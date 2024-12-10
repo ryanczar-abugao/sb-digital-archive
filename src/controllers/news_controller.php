@@ -47,6 +47,7 @@ class NewsController
 
   public function showSelectedNews($id)
   {
+    session_start();
     $newsArticles = $this->newsModel->getAllNews(); // Fetch all news articles again for consistency
     $selectedNews = $this->newsModel->getNewsById($id); // Fetch the selected news article using model method
     $this->renderNewsPage($newsArticles, $selectedNews, $this->formActions->update($id));
@@ -94,7 +95,7 @@ class NewsController
 
       // Handle image uploads
       if (isset($_FILES['image']) && !empty($_FILES['image']['name'][0])) {
-        $uploadsDir = '/uploads/images/';
+        $uploadsDir = 'uploads/images/';
         if (!is_dir($uploadsDir)) {
           mkdir($uploadsDir, 0755, true);
         }
@@ -130,6 +131,7 @@ class NewsController
 
   public function updateNews($id)
   {
+    session_start();
     $news = $this->newsModel->getNewsById($id); // Get the news article by ID
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $title = $_POST['title'];

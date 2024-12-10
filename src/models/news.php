@@ -19,6 +19,7 @@ class News
         $stmt = $this->pdo->prepare("
         SELECT 
             news.*, 
+            CONCAT(users.firstName, ' ', users.lastName) AS author, 
             users.firstName AS authorFirstName, 
             users.lastName AS authorLastName, 
             attachments.url AS attachmentUrl,
